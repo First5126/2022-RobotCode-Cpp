@@ -7,7 +7,7 @@ rpi_camera::rpi_camera(Layer *layer) {
 
     m_table = nt::NetworkTableInstance::GetDefault();
 
-    assert(m_layer != m_layer);
+    assert(m_layer != NULL);
 }
 
 rpi_camera::~rpi_camera() { }

@@ -35,6 +35,8 @@ void InputDev::Xbox::OutputIntoLayer() {
 
     m_layer->forward_drive_speed = Lx;
     m_layer->turning_drive_speed = Ry;
+
+    m_layer->GrabBall = m_controller->GetAButton();
 }
 
 double InputDev::Xbox::ClampDeadZone(double intput, double deadzone) {
