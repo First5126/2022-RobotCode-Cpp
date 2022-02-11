@@ -5,19 +5,23 @@
 #include <frc/XboxController.h>
 
 
-namespace Input {
+namespace InputDev {
     class Xbox {
         private:
-        CompLayer* m_layer;
+        Layer* m_layer;
 
         public:
 
         frc::XboxController* m_controller;
 
-        Xbox(CompLayer *layer);
-        Xbox(CompLayer *layer, uint8_t port);
+        Xbox(Layer *layer);
+        Xbox(Layer *layer, uint8_t port);
         ~Xbox();
 
         void OutputIntoLayer();
+
+        private:
+
+        double ClampDeadZone(double intput, double deadzone);
     };
 } 

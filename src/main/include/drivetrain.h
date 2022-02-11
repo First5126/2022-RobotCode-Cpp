@@ -7,13 +7,13 @@ namespace OutputDev {
     class DriveTrain {
         public:
 
-        DriveTrain(CompLayer *layer);
-        ~DriveTrain();
+            DriveTrain(Layer *layer);
+            ~DriveTrain();
 
-        void update();
+            void update();
 
         private:
-        void Drive(double left, double right);
-        CompLayer *m_layer;
+            void Drive(double left, double right);
+            Layer *m_layer;
     };
 }

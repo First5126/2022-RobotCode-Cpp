@@ -20,6 +20,10 @@
     "iterator": "cpp",
     "ostream": "cpp",
     "matrixfunctions": "cpp",
-    "*.mac": "cpp"
+    "*.mac": "cpp",
+    "cmath": "cpp",
+    "complex": "cpp",
+    "istream": "cpp",
+    "*.inc": "cpp"
   }
 }

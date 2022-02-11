@@ -14,10 +14,6 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  //m_layer = new CompLayer();
-  //m_xbox = new Input::Xbox(m_layer);
-  //m_drivetrain = new OutputDev::DriveTrain(m_layer);
-
 }
 
 /**
@@ -29,6 +25,10 @@ void Robot::RobotInit() {
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
+  // cont. Outputing / Input devices
+  m_camera->OutputIntoLayer();
+  m_balltarget->update();
+
   m_layer->OutputToSmartdashboard();
 }
 
@@ -68,6 +68,11 @@ void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
   m_xbox->OutputIntoLayer();
+
+  if (m_layer->GrabBall) {
+    m_balltarget->OutputIntoLayer();
+  }
+
   m_drivetrain->update();
 }
 

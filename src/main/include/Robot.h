@@ -12,7 +12,8 @@
 #include "Layer.h"
 #include "xbox.h"
 #include "DriveTrain.h"
-
+#include "rpi_camera.h"
+#include "BallTarget.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -33,9 +34,10 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  CompLayer *m_layer = new CompLayer();
-  Input::Xbox *m_xbox = new Input::Xbox(m_layer);
-  OutputDev::DriveTrain *m_drivetrain = new OutputDev::DriveTrain(m_layer);
-
+  Layer *m_layer = new Layer();
   
+  InputDev::Xbox *m_xbox = new InputDev::Xbox(m_layer);
+  OutputDev::DriveTrain *m_drivetrain = new OutputDev::DriveTrain(m_layer);
+  InputDev::rpi_camera *m_camera = new InputDev::rpi_camera(m_layer);
+  Auto::BallTarget *m_balltarget = new Auto::BallTarget(m_layer);  
 };
