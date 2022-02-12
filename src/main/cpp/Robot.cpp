@@ -8,11 +8,15 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+#include <iostream>
+
 
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+
+  std::cout << "[ROBOT]: ROBOT INIT" << std::endl;
 
 }
 

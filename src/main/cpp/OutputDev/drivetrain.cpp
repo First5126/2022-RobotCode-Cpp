@@ -1,5 +1,6 @@
 #include "drivetrain.h"
 #include "robotbase.h"
+#include <iostream>
 
 OutputDev::DriveTrain::DriveTrain(Layer *layer) {
     m_layer = layer;
@@ -11,6 +12,8 @@ OutputDev::DriveTrain::DriveTrain(Layer *layer) {
     Base::Motors::DriveTrain::leftBack.Follow(Base::Motors::DriveTrain::leftFront);
 
     assert(m_layer != NULL);
+
+    std::cout << "[OUTPUTDEV]: DRIVE TRAIN INIT" << std::endl;
 }
 
 OutputDev::DriveTrain::~DriveTrain() { }

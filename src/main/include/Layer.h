@@ -7,7 +7,8 @@ namespace RobotMode {
         AUTO = 0,
         TELEOP,
         DISABLED,
-        TEST
+        TEST,
+        PROTECTION
     };
 }
 
@@ -60,7 +61,15 @@ class Layer {
         // If the user wants to use the auto or not
         bool GrabBall = false;
 
+        // Tells if we are shooting or not [false, true]
+        bool intaking = false;
+
+
+        void ProtectHuman();
+        void SetMode(RobotMode::mode mode);
         void OutputToSmartdashboard();
 
-    
+    private:
+
+        RobotMode::mode r_mode;
 };

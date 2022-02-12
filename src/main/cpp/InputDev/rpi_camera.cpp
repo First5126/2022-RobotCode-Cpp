@@ -1,5 +1,7 @@
 #include "rpi_camera.h"
 
+#include <iostream>
+
 using namespace InputDev;
 
 rpi_camera::rpi_camera(Layer *layer) {
@@ -8,6 +10,8 @@ rpi_camera::rpi_camera(Layer *layer) {
     m_table = nt::NetworkTableInstance::GetDefault();
 
     assert(m_layer != NULL);
+
+    std::cout << "[INPUTDEV]: RPI_CAMERA NETWORK INIT" << std::endl;
 }
 
 rpi_camera::~rpi_camera() { }

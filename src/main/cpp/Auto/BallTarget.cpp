@@ -1,6 +1,8 @@
 #include "BallTarget.h"
 #include <math.h>
 
+#include <iostream>
+
 using namespace Auto;
 
 BallTarget::BallTarget(Layer *layer) {
@@ -13,6 +15,8 @@ BallTarget::BallTarget(Layer *layer) {
     );
 
     assert(m_layer != NULL);
+
+    std::cout << "[AUTO]: BALL TARGET INIT" << std::endl;
 }
 
 BallTarget::~BallTarget() {

@@ -1,5 +1,7 @@
 #include "color_sensor.h"
 
+#include <iostream>
+
 using namespace InputDev;
 
 ColorSensor::ColorSensor(Layer *layer) {
@@ -7,6 +9,9 @@ ColorSensor::ColorSensor(Layer *layer) {
     //m_sensor = rev::ColorSensorV3(frc::I2C::Port::kOnboard);
 
     assert(m_layer != NULL);
+
+    std::cout << "[INPUTDEV]: COLOR SENSOR INIT" << std::endl;
+
 }
 
 ColorSensor::~ColorSensor() {

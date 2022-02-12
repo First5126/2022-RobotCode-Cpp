@@ -10,6 +10,9 @@ InputDev::Xbox::Xbox(Layer *layer) {
     m_controller = new frc::XboxController{0};
 
     assert(m_layer != NULL);
+    
+    std::cout << "[INPUTDEV]: XBOX CONTROLLER INIT" << std::endl;
+
 }
 
 InputDev::Xbox::Xbox(Layer *layer, uint8_t port) {
@@ -17,6 +20,9 @@ InputDev::Xbox::Xbox(Layer *layer, uint8_t port) {
     m_controller = new frc::XboxController{port};
 
     assert(m_layer != NULL);
+
+    std::cout << "[INPUTDEV]: XBOX CONTROLLER INIT" << std::endl;
+
 }
 
 
