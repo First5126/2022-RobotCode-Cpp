@@ -57,6 +57,14 @@ void Layer::OutputToSmartdashboard() {
     frc::SmartDashboard::PutNumber("Color Sensor R", cs_r);
     frc::SmartDashboard::PutNumber("Color Sensor G", cs_g);
     frc::SmartDashboard::PutNumber("Color Sensor B", cs_b);
+
+    frc::SmartDashboard::PutNumber("Left Pos", left_pos);
+    frc::SmartDashboard::PutNumber("Left Vel", left_vel);
+    frc::SmartDashboard::PutNumber("Left Acc", left_acc);
+
+    frc::SmartDashboard::PutNumber("Right Pos", right_pos);
+    frc::SmartDashboard::PutNumber("Right Vel", right_vel);
+    frc::SmartDashboard::PutNumber("Right Acc", right_acc);
     
 }
 

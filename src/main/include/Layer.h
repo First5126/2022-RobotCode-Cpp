@@ -64,6 +64,15 @@ class Layer {
         // Tells if we are shooting or not [false, true]
         bool intaking = false;
 
+        double left_pos = 0;
+        double right_pos = 0;
+
+        double left_vel = 0;
+        double right_vel = 0;
+
+        double left_acc = 0;
+        double right_acc = 0;
+
 
         void ProtectHuman();
         void SetMode(RobotMode::mode mode);

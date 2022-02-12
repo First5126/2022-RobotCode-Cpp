@@ -15,5 +15,7 @@ namespace OutputDev {
         private:
             void Drive(double left, double right);
             Layer *m_layer;
+
+            
     };
 }

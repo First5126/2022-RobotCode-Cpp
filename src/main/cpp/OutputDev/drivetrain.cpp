@@ -29,6 +29,18 @@ void OutputDev::DriveTrain::Drive(double left, double right) {
     Base::Motors::DriveTrain::leftFront .Set(ControlMode::PercentOutput, left);
     Base::Motors::DriveTrain::rightFront.Set(ControlMode::PercentOutput, right);
 
+    m_layer->left_acc = m_layer->left_vel;
+    m_layer->left_vel = Base::Motors::DriveTrain::leftBack.GetSelectedSensorVelocity(1);
+    m_layer->left_pos = Base::Motors::DriveTrain::leftBack.GetSelectedSensorPosition(1);
+    m_layer->left_acc = m_layer->left_vel - m_layer->left_acc;
+
+    m_layer->right_acc = m_layer->left_vel;
+    m_layer->right_vel = Base::Motors::DriveTrain::rightBack.GetSelectedSensorVelocity(1);
+    m_layer->right_pos = Base::Motors::DriveTrain::rightBack.GetSelectedSensorPosition(1);
+    m_layer->right_acc = m_layer->right_vel - m_layer->right_acc;
+
+
+
     if (m_layer->right_locked) Base::Motors::DriveTrain::rightFront.Set(ControlMode::PercentOutput, (left > 0) ? -0.01 : 0.01);
     if (m_layer->left_locked) Base::Motors::DriveTrain::leftFront.Set(ControlMode::PercentOutput, (right > 0) ? -0.01 : 0.01);
     
