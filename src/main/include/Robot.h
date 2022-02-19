@@ -14,6 +14,8 @@
 #include "drivetrain.h"
 #include "rpi_camera.h"
 #include "BallTarget.h"
+#include "intake.h"
+#include "shooter.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -28,6 +30,8 @@ class Robot : public frc::TimedRobot {
   void TestInit() override;
   void TestPeriodic() override;
 
+  ~Robot();
+
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
@@ -36,8 +40,13 @@ class Robot : public frc::TimedRobot {
 
   Layer *m_layer = new Layer();
   
-  InputDev::Xbox *m_xbox = new InputDev::Xbox(m_layer);
-  OutputDev::DriveTrain *m_drivetrain = new OutputDev::DriveTrain(m_layer);
-  InputDev::rpi_camera *m_camera = new InputDev::rpi_camera(m_layer);
-  Auto::BallTarget *m_balltarget = new Auto::BallTarget(m_layer);  
+  InputDev::Xbox *m_xbox; // = new InputDev::Xbox(m_layer);
+  OutputDev::DriveTrain *m_drivetrain; // = new OutputDev::DriveTrain(m_layer);
+  InputDev::rpi_camera *m_camera; // = new InputDev::rpi_camera(m_layer);
+  Auto::BallTarget *m_balltarget; // = new Auto::BallTarget(m_layer);  
+  OutputDev::Intake *m_intake;
+  OutputDev::Shooter *m_shooter;
+  
+
+
 };

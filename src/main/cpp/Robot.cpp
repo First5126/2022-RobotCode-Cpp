@@ -9,14 +9,23 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <iostream>
-
+#include "robotbase.h"
 
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  std::cout << "[ROBOT]: ROBOT INIT" << std::endl;
+  std::cout << "[ROBOT]: ROBOT INIT" << std::endl;  
+
+  //Base::Motors::Mek::IntakeMotor = new rev::CANSparkMax {20, rev::CANSparkMaxLowLevel::MotorType::kBrushless };
+
+  m_xbox        = new InputDev::Xbox(m_layer);
+  m_drivetrain  = new OutputDev::DriveTrain(m_layer);
+  m_camera      = new InputDev::rpi_camera(m_layer);
+  m_balltarget  = new Auto::BallTarget(m_layer);  
+  m_shooter     = new OutputDev::Shooter(m_layer);
+  m_intake      = new OutputDev::Intake(m_layer);
 
 }
 
@@ -78,11 +87,24 @@ void Robot::TeleopPeriodic() {
   }
 
   m_drivetrain->update();
+  m_intake->update();
+  m_shooter->update();
 }
 
 void Robot::DisabledInit() {}
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+  m_layer->ProtectHuman();
+}
+
+Robot::~Robot() {
+  delete m_layer;
+  delete m_xbox;
+  delete m_drivetrain;
+  delete m_camera;
+  delete m_balltarget;
+
+}
 
 void Robot::TestInit() {}
 

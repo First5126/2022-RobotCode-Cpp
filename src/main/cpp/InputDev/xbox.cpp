@@ -10,6 +10,7 @@ InputDev::Xbox::Xbox(Layer *layer) {
     m_controller = new frc::XboxController{0};
 
     assert(m_layer != NULL);
+    assert(m_layer != NULL);
     
     std::cout << "[INPUTDEV]: XBOX CONTROLLER INIT" << std::endl;
 
@@ -43,6 +44,8 @@ void InputDev::Xbox::OutputIntoLayer() {
     m_layer->turning_drive_speed = Ry;
 
     m_layer->GrabBall = m_controller->GetAButton();
+    m_layer->intaking = m_controller->GetBButton();
+    m_layer->shooting = ClampDeadZone(m_controller->GetRightY(), 0.15);
 }
 
 double InputDev::Xbox::ClampDeadZone(double intput, double deadzone) {

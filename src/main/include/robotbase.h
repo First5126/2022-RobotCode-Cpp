@@ -13,12 +13,11 @@ namespace Base {
         }
 
         namespace DriveTrain {
-            TalonFX leftFront   = {2};
-            TalonFX leftBack    = {4};
-            TalonFX rightFront  = {8};
-            TalonFX rightBack   = {6};
-
-            rev::CANSparkMax Shooter(3, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+            static TalonFX *leftFront   = new TalonFX {2};
+            static TalonFX *leftBack    = new TalonFX {4};
+            static TalonFX *rightFront  = new TalonFX {8};
+            static TalonFX *rightBack   = new TalonFX {6};
+            
 
         }
     }

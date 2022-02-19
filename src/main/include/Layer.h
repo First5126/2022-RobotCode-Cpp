@@ -73,6 +73,8 @@ class Layer {
         double left_acc = 0;
         double right_acc = 0;
 
+        double shooting = 0;
+
 
         void ProtectHuman();
         void SetMode(RobotMode::mode mode);

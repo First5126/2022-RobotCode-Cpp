@@ -74,6 +74,12 @@ void Layer::ProtectHuman() {
     this->forward_drive_speed = 0;
     this->turning_drive_speed = 0;
     this->intaking = 0;
+
+    this->right_pos = 0;
+    this->left_pos  = 0;
+
+    this->shooting = 0;
+    this->intaking = 0;
 }
 
 void Layer::SetMode(RobotMode::mode mode) {
