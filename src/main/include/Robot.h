@@ -4,49 +4,28 @@
 
 #pragma once
 
-#include <string>
-
 #include <frc/TimedRobot.h>
-#include <frc/smartdashboard/SendableChooser.h>
+#include <frc2/command/Command.h>
 
-#include "Layer.h"
-#include "xbox.h"
-#include "drivetrain.h"
-#include "rpi_camera.h"
-#include "BallTarget.h"
-#include "intake.h"
-#include "shooter.h"
+#include "RobotContainer.h"
 
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
+  void DisabledInit() override;
+  void DisabledPeriodic() override;
   void AutonomousInit() override;
   void AutonomousPeriodic() override;
   void TeleopInit() override;
   void TeleopPeriodic() override;
-  void DisabledInit() override;
-  void DisabledPeriodic() override;
-  void TestInit() override;
   void TestPeriodic() override;
 
-  ~Robot();
-
  private:
-  frc::SendableChooser<std::string> m_chooser;
-  const std::string kAutoNameDefault = "Default";
-  const std::string kAutoNameCustom = "My Auto";
-  std::string m_autoSelected;
+  // Have it null by default so that if testing teleop it
+  // doesn't have undefined behavior and potentially crash.
+  frc2::Command* m_autonomousCommand = nullptr;
+  frc2::Command* m_teleopCommand = nullptr;
 
-  Layer *m_layer = new Layer();
-  
-  InputDev::Xbox *m_xbox; // = new InputDev::Xbox(m_layer);
-  OutputDev::DriveTrain *m_drivetrain; // = new OutputDev::DriveTrain(m_layer);
-  InputDev::rpi_camera *m_camera; // = new InputDev::rpi_camera(m_layer);
-  Auto::BallTarget *m_balltarget; // = new Auto::BallTarget(m_layer);  
-  OutputDev::Intake *m_intake;
-  OutputDev::Shooter *m_shooter;
-  
-
-
+  RobotContainer m_container;
 };
