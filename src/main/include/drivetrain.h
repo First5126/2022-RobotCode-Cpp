@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Layer.h"
+#include <frc/drive/DifferentialDrive.h>
 
 namespace OutputDev {
 
@@ -16,6 +17,8 @@ namespace OutputDev {
             void Drive(double left, double right);
             Layer *m_layer;
 
+
+            frc::DifferentialDrive *m_drive;
             
     };
 }

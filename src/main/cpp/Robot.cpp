@@ -88,7 +88,7 @@ void Robot::TeleopPeriodic() {
 
   m_drivetrain->update();
   m_intake->update();
-  m_shooter->update();
+  m_shooter->VelUpdate();
 }
 
 void Robot::DisabledInit() {}

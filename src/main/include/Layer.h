@@ -1,6 +1,9 @@
 #pragma once
 
 #include <frc/smartdashboard/SmartDashboard.h>
+#include "DriveAutoConst.h"
+#include <frc/Encoder.h>
+
 
 namespace RobotMode {
     enum mode {
@@ -22,11 +25,7 @@ class Layer {
 
         // Values Layer Contains
 
-        // Robot Forward Drive Speed
-        double forward_drive_speed = 0;
-
-        // Robot Turning Drive Speed
-        double turning_drive_speed = 0;
+        
 
         // Sets the left motor to lock
         bool left_locked = false;
@@ -64,6 +63,8 @@ class Layer {
         // Tells if we are shooting or not [false, true]
         bool intaking = false;
 
+
+        // Motor Outputs
         double left_pos = 0;
         double right_pos = 0;
 
@@ -73,14 +74,39 @@ class Layer {
         double left_acc = 0;
         double right_acc = 0;
 
-        double shooting = 0;
+        
+
+        // Drive volt
+        units::volt_t left;
+        units::volt_t right;
+
+        // Robot Forward Drive Speed
+        double forward_drive_speed = 0;
+
+        // Robot Turning Drive Speed
+        double turning_drive_speed = 0;
+
+
+        bool shooting = 0;
+        double shooting_percent = 0;
+
+        double shooting_distance = 0;
+
+        double current_shooting_speed = 0;
+
 
 
         void ProtectHuman();
         void SetMode(RobotMode::mode mode);
         void OutputToSmartdashboard();
 
+        void resetMotors();
+        bool IsMotorsNeedingReset();
+
+
     private:
+
+        bool MotorReset = false;
 
         RobotMode::mode r_mode;
 };

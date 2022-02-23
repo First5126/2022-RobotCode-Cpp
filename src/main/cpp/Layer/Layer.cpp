@@ -8,6 +8,7 @@ Layer::Layer() {
     turning_drive_speed = 0;
 
     std::cout << "[LAYER]: INIT" << std::endl;
+
 }
 
 Layer::~Layer() {
@@ -24,11 +25,11 @@ Layer::~Layer() {
 
 void Layer::OutputToSmartdashboard() {
     
-    frc::SmartDashboard::PutNumber("Forward Driving", forward_drive_speed);
-    frc::SmartDashboard::PutNumber("Turning Driving", turning_drive_speed);
+    //frc::SmartDashboard::PutNumber("Forward Driving", forward_drive_speed);
+    //frc::SmartDashboard::PutNumber("Turning Driving", turning_drive_speed);
 
-    frc::SmartDashboard::PutBoolean("Left Locked", left_locked);
-    frc::SmartDashboard::PutBoolean("Right Locked", right_locked);
+    //frc::SmartDashboard::PutBoolean("Left Locked", left_locked);
+    //frc::SmartDashboard::PutBoolean("Right Locked", right_locked);
 
     frc::SmartDashboard::PutNumber("pi YAW", pi_yaw);
     frc::SmartDashboard::PutNumber("pi PIT", pi_pitch);
@@ -58,14 +59,24 @@ void Layer::OutputToSmartdashboard() {
     frc::SmartDashboard::PutNumber("Color Sensor G", cs_g);
     frc::SmartDashboard::PutNumber("Color Sensor B", cs_b);
 
-    frc::SmartDashboard::PutNumber("Left Pos", left_pos);
-    frc::SmartDashboard::PutNumber("Left Vel", left_vel);
-    frc::SmartDashboard::PutNumber("Left Acc", left_acc);
+    //frc::SmartDashboard::PutNumber("Left Pos", left_pos);
+    //frc::SmartDashboard::PutNumber("Left Vel", left_vel);
+    //frc::SmartDashboard::PutNumber("Left Acc", left_acc);
+    //frc::SmartDashboard::PutNumber("Right Pos", right_pos);
+    //frc::SmartDashboard::PutNumber("Right Vel", right_vel);
+    //frc::SmartDashboard::PutNumber("Right Acc", right_acc);
 
-    frc::SmartDashboard::PutNumber("Right Pos", right_pos);
-    frc::SmartDashboard::PutNumber("Right Vel", right_vel);
-    frc::SmartDashboard::PutNumber("Right Acc", right_acc);
+    this->shooting_percent = frc::SmartDashboard::GetNumber("Shoot Power", 0);
+    this->shooting_distance = frc::SmartDashboard::GetNumber("Distance", 0);
+
+    //frc::SmartDashboard::PutNumber("d", this->shooting_distance);
+    //frc::SmartDashboard::PutNumber("Shoot Power", (this->shooting_percent > 0.01 || this->shooting_percent < -0.1) ? this->shooting_percent : 0);
+
+    frc::SmartDashboard::PutNumber("Shooting Vel", this->current_shooting_speed);
+
+    frc::SmartDashboard::PutBoolean("PROTECTION", this->r_mode == RobotMode::PROTECTION);
     
+    frc::SmartDashboard::PutBoolean("Shooting", this->shooting);
 }
 
 void Layer::ProtectHuman() {
@@ -84,4 +95,16 @@ void Layer::ProtectHuman() {
 
 void Layer::SetMode(RobotMode::mode mode) {
 
+}
+
+void Layer::resetMotors() {
+    this->MotorReset = true;
+}
+
+bool Layer::IsMotorsNeedingReset() {
+    bool reset = this->MotorReset;
+
+    this->MotorReset = false;
+
+    return reset;
 }

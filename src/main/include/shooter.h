@@ -8,7 +8,8 @@ namespace OutputDev {
         private:
 
         Layer *m_layer;
-        TalonFX *ShooterMotor;
+        TalonFX *ShooterMotorRight;
+        TalonFX * ShooterMotorLeft;
 
         TalonSRX *IntakeWheel;
 
@@ -18,5 +19,6 @@ namespace OutputDev {
         ~Shooter();
 
         void update();
+        void VelUpdate();
     };
 }

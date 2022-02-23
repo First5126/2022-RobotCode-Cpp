@@ -10,11 +10,15 @@ OutputDev::DriveTrain::DriveTrain(Layer *layer) {
     assert(Base::Motors::DriveTrain::rightBack  != nullptr);
     assert(Base::Motors::DriveTrain::rightFront != nullptr);
 
+
+
     Base::Motors::DriveTrain::rightBack->SetInverted(true);
     Base::Motors::DriveTrain::rightFront->SetInverted(true);
 
     Base::Motors::DriveTrain::rightBack->Follow(*Base::Motors::DriveTrain::rightFront);
     Base::Motors::DriveTrain::leftBack->Follow(*Base::Motors::DriveTrain::leftFront);
+
+    this->m_drive = new frc::DifferentialDrive (*Base::Motors::DriveTrain::leftFront, *Base::Motors::DriveTrain::rightFront);
 
     assert(m_layer != NULL);
 
@@ -24,15 +28,21 @@ OutputDev::DriveTrain::DriveTrain(Layer *layer) {
 OutputDev::DriveTrain::~DriveTrain() { }
 
 void OutputDev::DriveTrain::update() {
-    double Forward = m_layer->forward_drive_speed;
-    double Turn = m_layer->turning_drive_speed;
 
-    Drive(Forward + Turn, Forward - Turn);
+    Drive(m_layer->forward_drive_speed, m_layer->turning_drive_speed);
+
 }
 
 void OutputDev::DriveTrain::Drive(double left, double right) {
-    Base::Motors::DriveTrain::leftFront ->Set(ControlMode::PercentOutput, left);
-    Base::Motors::DriveTrain::rightFront->Set(ControlMode::PercentOutput, right);
+
+    if (m_layer->IsMotorsNeedingReset()) {
+        Base::Motors::DriveTrain::leftBack->SetSelectedSensorPosition(0, 1);
+        Base::Motors::DriveTrain::rightBack->SetSelectedSensorPosition(0, 1);
+        Base::Motors::DriveTrain::leftFront->SetSelectedSensorPosition(0, 1);
+        Base::Motors::DriveTrain::rightFront->SetSelectedSensorPosition(0, 1);
+    }
+
+    m_drive->ArcadeDrive(left, right);
 
     double left_100ms = m_layer->left_vel;
     m_layer->left_vel = Base::Motors::DriveTrain::leftBack->GetSelectedSensorVelocity(1);
@@ -48,7 +58,6 @@ void OutputDev::DriveTrain::Drive(double left, double right) {
     accel = m_layer->left_vel - left_100ms;
     m_layer->right_acc = (accel > m_layer->left_acc) ? accel : m_layer->left_acc;
 
-    
 
     if (m_layer->right_locked) Base::Motors::DriveTrain::rightFront->Set(ControlMode::PercentOutput, (left > 0) ? -0.01 : 0.01);
     if (m_layer->left_locked) Base::Motors::DriveTrain::leftFront->Set(ControlMode::PercentOutput, (right > 0) ? -0.01 : 0.01);

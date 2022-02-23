@@ -36,8 +36,8 @@ void InputDev::Xbox::OutputIntoLayer() {
     double Lx = m_controller->GetRawAxis(3) - m_controller->GetRawAxis(2);
     double Ry = ClampDeadZone(m_controller->GetLeftX(), 0.15);
 
-    m_layer->left_locked = m_controller->GetLeftBumper();
-    m_layer->right_locked = m_controller->GetRightBumper();
+    //m_layer->left_locked = m_controller->GetLeftBumper();
+    //m_layer->right_locked = m_controller->GetRightBumper();
 
 
     m_layer->forward_drive_speed = Lx;
@@ -45,7 +45,7 @@ void InputDev::Xbox::OutputIntoLayer() {
 
     m_layer->GrabBall = m_controller->GetAButton();
     m_layer->intaking = m_controller->GetBButton();
-    m_layer->shooting = ClampDeadZone(m_controller->GetRightY(), 0.15);
+    m_layer->shooting = m_controller->GetRightBumper();
 }
 
 double InputDev::Xbox::ClampDeadZone(double intput, double deadzone) {

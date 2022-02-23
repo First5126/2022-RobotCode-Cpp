@@ -13,10 +13,10 @@ namespace Base {
         }
 
         namespace DriveTrain {
-            static TalonFX *leftFront   = new TalonFX {2};
-            static TalonFX *leftBack    = new TalonFX {4};
-            static TalonFX *rightFront  = new TalonFX {8};
-            static TalonFX *rightBack   = new TalonFX {6};
+            static WPI_TalonFX *leftFront   = new WPI_TalonFX {2};
+            static WPI_TalonFX *leftBack    = new WPI_TalonFX {4};
+            static WPI_TalonFX *rightFront  = new WPI_TalonFX {8};
+            static WPI_TalonFX *rightBack   = new WPI_TalonFX {6};
             
 
         }
