@@ -9,8 +9,9 @@
 #include "commands/ExampleCommand.h"
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/DriveSubsystem.h"
-#include "frc/XboxController.h"
+#include "subsystems/ShooterSubsystem.h"
 
+#include "frc/XboxController.h"
 #include <frc/controller/PIDController.h>
 #include <frc/controller/RamseteController.h>
 #include <frc/shuffleboard/Shuffleboard.h>
@@ -36,6 +37,8 @@ class RobotContainer {
 
   frc2::Command* GetAutonomousCommand();
 
+  void ResetAll();
+
  private:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
@@ -44,6 +47,8 @@ class RobotContainer {
   frc::XboxController m_driverController { 0 };
 
   DriveSubsystem m_drive;
+  ShooterSubsystem m_shooter;
+
 
 
 

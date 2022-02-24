@@ -1,3 +1,17 @@
+/*
+* TEAM 5126 (c) : 2022 FRC Rapid React
+* Command Based C++ Robot Code 
+* 
+* [Drive Train]
+* 
+*      |O   |\
+* ... [=====] *
+* 
+* ## What does this subsystem do?
+* This subsystem can drive the wheels of the robot.
+* It can also get the position of the robot in 2d space!
+*/ 
+
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
@@ -23,27 +37,49 @@ class DriveSubsystem : public frc2::SubsystemBase {
  public:
   DriveSubsystem();
 
-  
+  // Runs ever activation packet
   void Periodic() override;
-
+  
+  /*
+  * |O----O| Robot:
+  * |      |   This method Drives the robot with
+  * |      |     values between [-1, 1] for forward and rotation.
+  * |O----O|
+  */
   void ArcadeDrive(double fwd, double rot);
+
+  // Drives the robot with voltage instead of %
   void TankDriveVolts(units::volt_t left, units::volt_t right);
 
+  // Reset the encoders on the drive motors
   void ResetEncoders();
+
+  // Get the distance that the robot has travled from both motors
   double GetAverageEncoderDistance();
 
+  // Get the left encoder value
   double GetLeftEncoderPos();
+
+  // Get the right encoder value
   double GetRightEncoderPos();
 
+  // Set the max speed that the robot can travel 
   void SetMaxSpeed(double speed);
+
+  // Get the degree that the robot is facing [-180, 180]
   units::degree_t GetHeading() const;
 
+  // Get the rate at which the robot is turning
   double GetTurnRate();
+
+  // Get the position in 2d where the robot is
   frc::Pose2d GetPose();
 
-  frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
-  void ResetOdometry(frc::Pose2d pose);
+  // Get the wheel speeds
+  //frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
 
+  // Reset the the robot in 2d space
+  void ResetOdometry(frc::Pose2d pose);
 
  private:
   WPI_TalonFX LFMotor {2};

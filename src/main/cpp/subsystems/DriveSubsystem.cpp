@@ -1,3 +1,17 @@
+/*
+* TEAM 5126 (c) : 2022 FRC Rapid React
+* Command Based C++ Robot Code 
+* 
+* [Drive Train]
+* 
+*      |O   |\
+* ... [=====] *
+* 
+* ## What does this subsystem do?
+* This subsystem can drive the wheels of the robot.
+* It can also get the position of the robot in 2d space!
+*/ 
+
 #include "subsystems/DriveSubsystem.h"
 #include <iostream>
 
@@ -118,11 +132,11 @@ frc::Pose2d DriveSubsystem::GetPose() {
     // TODO
 }
 
-frc::DifferentialDriveWheelSpeeds DriveSubsystem::GetWheelSpeeds() {
+//frc::DifferentialDriveWheelSpeeds DriveSubsystem::GetWheelSpeeds() {
     //frc::DifferentialDriveWheelSpeeds speed;
     //speed.left  = LFMotor.GetActiveTrajectoryVelocity(1) ;
     //speed.right = RFMotor.GetActiveTrajectoryVelocity(1);
-}
+//}
 void DriveSubsystem::ResetOdometry(frc::Pose2d pose) {
     m_tacker.ResetPosition(pose, this->GetHeading());
 }
