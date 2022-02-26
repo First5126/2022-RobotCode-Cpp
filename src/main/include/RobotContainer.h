@@ -10,6 +10,8 @@
 #include "subsystems/ExampleSubsystem.h"
 #include "subsystems/DriveSubsystem.h"
 #include "subsystems/ShooterSubsystem.h"
+#include "subsystems/IntakeSubsystem.h"
+#include "commands/DriveDistanceCommand.h"
 
 #include "frc/XboxController.h"
 #include <frc/controller/PIDController.h>
@@ -48,6 +50,7 @@ class RobotContainer {
 
   DriveSubsystem m_drive;
   ShooterSubsystem m_shooter;
+  IntakeSubsystem m_intake;
 
 
 

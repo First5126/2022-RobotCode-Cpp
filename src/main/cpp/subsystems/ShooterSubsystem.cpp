@@ -18,8 +18,8 @@
 #include <iostream>
 
 ShooterSubsystem::ShooterSubsystem() {
-    this->ShooterLeft  = new rev::CANSparkMax(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
-    this->ShooterRight = new rev::CANSparkMax(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+    this->ShooterLeft  = new rev::CANSparkMax(21, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+    this->ShooterRight = new rev::CANSparkMax(22, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
     std::cout << "Shooter Subsystem - " << "Checking motors..." << std::endl;
 
@@ -51,7 +51,7 @@ void ShooterSubsystem::Periodic() {
 }
 
 void ShooterSubsystem::RunShooter(double speed) {
-    m_pid.SetSetpoint(speed);
+    m_pid.SetSetpoint(speed * 24.00);
 
     auto ShooterSpeed = m_pid.Calculate(this->GetShooterSpeed());
 

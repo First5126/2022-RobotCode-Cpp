@@ -33,9 +33,12 @@
 #include <wpi/numbers>
 
 
+#include "frc/controller/PIDController.h"
+
 class DriveSubsystem : public frc2::SubsystemBase {
  public:
   DriveSubsystem();
+  ~DriveSubsystem();
 
   // Runs ever activation packet
   void Periodic() override;
@@ -66,6 +69,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
   // Set the max speed that the robot can travel 
   void SetMaxSpeed(double speed);
 
+  // Drive Certen amount of feet
+  double CalcualteDriveEncoder(double ft);
+
   // Get the degree that the robot is facing [-180, 180]
   units::degree_t GetHeading() const;
 
@@ -74,6 +80,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   // Get the position in 2d where the robot is
   frc::Pose2d GetPose();
+
+  double SetLeftSpeed(double speed);
+  double SetRightSpeed(double speed);
 
   // Get the wheel speeds
   //frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
@@ -99,6 +108,24 @@ class DriveSubsystem : public frc2::SubsystemBase {
   frc::DifferentialDriveOdometry m_tacker { frc::Rotation2d() };
 
   double MaxDriveSpeed = 0;
+
+  double EncoderPerRPM = 2048;
+  double GearBoxValue = 15.00;
+  double WheelRPM_to_Distance_in_feet = 4.00 / (2 * (M_PI)); // 4 / 2(pi)
+
+  double EncoderSetLeftValue = 0;
+  double EncoderSetRightValue = 0;
+
+  double EncoderStartLeftValue = 0;
+  double EncoderStartRightValue = 0;
+
+  
+  double Kp = 3.4933;
+  double Ki = 0;
+  double Kd = 0.066062;
+
+  frc::PIDController pid_left {Kp, Ki, Kd};
+  frc::PIDController pid_right {Kp, Ki, Kd};
   
   
 };

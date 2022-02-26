@@ -14,9 +14,14 @@
 
 #include "subsystems/DriveSubsystem.h"
 #include <iostream>
+#include <math.h>
 
 #include "frc/shuffleboard/Shuffleboard.h"
 #include "frc/smartdashboard/SmartDashboard.h"
+
+DriveSubsystem::~DriveSubsystem() {
+    std::cout << "Deconstruct!" << std::endl;
+}
 
 DriveSubsystem::DriveSubsystem() {
     std::cout << "DriveSubSystem INIT  -  ";
@@ -44,6 +49,9 @@ DriveSubsystem::DriveSubsystem() {
     LBMotor.IsAlive() &&
     RFMotor.IsAlive() &&
     RBMotor.IsAlive()  ;
+
+    m_right.SetInverted(true);
+    
 
     std::cout << "\tMotors\t" << (motors_ok ? "OK" : "FAIL") << std::endl;
 
@@ -102,8 +110,17 @@ void DriveSubsystem::TankDriveVolts(units::volt_t left, units::volt_t right) {
     frc::SmartDashboard::PutNumber("Right Volt", right.value());
 }
 
+double DriveSubsystem::SetLeftSpeed(double speed) {
+    m_drive.Check();
+    m_left.Set(speed);
+}
+double DriveSubsystem::SetRightSpeed(double speed){
+    m_drive.Check();
+    m_right.Set(speed);
+}
+
 void DriveSubsystem::ResetEncoders() {
-    ZeroEncoderPos_Left = LFMotor.GetSelectedSensorPosition(1);
+    ZeroEncoderPos_Left = LFMotor.SetSelectedSensorPosition(1);
     ZeroEncoderPos_right= RFMotor.GetSelectedSensorPosition(1);
 
 }
@@ -112,10 +129,10 @@ double DriveSubsystem::GetAverageEncoderDistance() {
 }
 
 double DriveSubsystem::GetLeftEncoderPos() {
-    return LFMotor.GetSelectedSensorPosition(1) - ZeroEncoderPos_Left;
+    return LFMotor.GetSensorCollection().GetIntegratedSensorPosition();
 }
 double DriveSubsystem::GetRightEncoderPos() {
-    return RFMotor.GetSelectedSensorPosition(1) - ZeroEncoderPos_right;
+    return -RFMotor.GetSensorCollection().GetIntegratedSensorPosition();
 }
 
 void DriveSubsystem::SetMaxSpeed(double speed) {
@@ -130,6 +147,15 @@ double DriveSubsystem::GetTurnRate() {
 }
 frc::Pose2d DriveSubsystem::GetPose() {
     // TODO
+}
+
+double DriveSubsystem::CalcualteDriveEncoder(double ft) {
+    double Wheel_rotations = ft * this->WheelRPM_to_Distance_in_feet;
+    double Motor_rotations = Wheel_rotations * this->GearBoxValue;
+    double Encoder_rotations = Motor_rotations * this->EncoderPerRPM;
+
+
+    return Encoder_rotations;
 }
 
 //frc::DifferentialDriveWheelSpeeds DriveSubsystem::GetWheelSpeeds() {
