@@ -95,6 +95,10 @@ void DriveSubsystem::Periodic()  {
     }
 }
 
+void DriveSubsystem::TankDrive(double left, double right) {
+    m_drive.TankDrive(left, right);
+}
+
 void DriveSubsystem::ArcadeDrive(double fwd, double rot) {
     m_drive.ArcadeDrive(fwd, rot);
 
@@ -118,6 +122,8 @@ double DriveSubsystem::SetRightSpeed(double speed){
     m_drive.Check();
     m_right.Set(speed);
 }
+
+
 
 void DriveSubsystem::ResetEncoders() {
     ZeroEncoderPos_Left = LFMotor.SetSelectedSensorPosition(1);

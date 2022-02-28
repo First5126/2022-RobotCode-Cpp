@@ -22,11 +22,13 @@
 #include "rev/CANSparkMax.h"
 #include <wpi/numbers>
 #include <frc/controller/PIDController.h>
+#include "rev/RelativeEncoder.h"
 
 
 class ShooterSubsystem : public frc2::SubsystemBase {
  public:
   ShooterSubsystem();
+  ~ShooterSubsystem();
 
   // Runs about every called packet
   void Periodic() override;
@@ -50,6 +52,10 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   // STOP ALL MOTORS FROM SPINING
   void StopAll();
+
+  bool ContainsBall();
+
+  bool IsCurrectColor();
   
 
  private:
@@ -62,5 +68,12 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   double Shooter_Ki = 0;
   double Shooter_Kd = 0;
 
-  frc::PIDController m_pid {0, 0, 0};
+  frc::PIDController m_pid {0.0002, 0.0005, 0.000001};
+
+  double shooter_speed = 0;
+
+  rev::SparkMaxRelativeEncoder *m_shooter_encoder;
+
+
+  rev::ColorSensorV3 m_sensor {frc::I2C::Port::kOnboard} ;
 };

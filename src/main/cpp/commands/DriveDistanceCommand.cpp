@@ -1,4 +1,5 @@
 #include "commands/DriveDistanceCommand.h"
+#include <frc/smartdashboard/SmartDashboard.h>
 
 #include <iostream>
 
@@ -10,7 +11,6 @@ DriveDistance::DriveDistance(DriveSubsystem* subsystem, std::function<double()> 
 }
 
 void DriveDistance::Initialize() {
-    std::cout << "PAIN PAIN PAOIN" << std::endl;
     this->is_done = 0;
 
     this->EncoderStartLeftValue = m_drive->GetLeftEncoderPos();
@@ -30,6 +30,9 @@ void DriveDistance::End(bool interrup)  {
     this->EncoderSetLeftValue = 0;
     this->EncoderSetRightValue = 0;
 
+    this->m_left_pid.Reset();
+    this->m_right_pid.Reset();
+
     
 }
 
@@ -37,19 +40,19 @@ void DriveDistance::Execute() {
     double RealEncoderLeft = this->EncoderSetLeftValue + this->EncoderStartLeftValue;
     double RealEncoderRight = this->EncoderSetRightValue + this->EncoderStartRightValue;
 
-    if (RealEncoderLeft >= m_drive->GetLeftEncoderPos() || RealEncoderRight >= m_drive->GetRightEncoderPos()) {
-        m_drive->ArcadeDrive(0.4, 0);
-    }
+    this->m_left_pid.SetSetpoint(RealEncoderLeft);
+    this->m_right_pid.SetSetpoint(RealEncoderRight);
 
-    else if (RealEncoderLeft <= m_drive->GetLeftEncoderPos() || RealEncoderRight <= m_drive->GetRightEncoderPos()) {
-        m_drive->ArcadeDrive(-0.4, 0);
-    }
+    double driveLeft = this->m_left_pid.Calculate(this->m_drive->GetLeftEncoderPos());
+    double driveRight = this->m_right_pid.Calculate(this->m_drive->GetRightEncoderPos());
 
+    m_drive->TankDrive(driveLeft, driveRight);
+
+    frc::SmartDashboard::PutNumber("Distance From Goal", RealEncoderLeft - this->m_drive->GetLeftEncoderPos());
     
 }
 
 bool DriveDistance::IsFinished() {
-    std::cout << "Test" << std::endl;
     double RealEncoderLeft = this->EncoderSetLeftValue + this->EncoderStartLeftValue;
     double RealEncoderRight = this->EncoderSetRightValue + this->EncoderStartRightValue;
 
@@ -59,7 +62,7 @@ bool DriveDistance::IsFinished() {
     };
 
     double WithinValue = 1000;
-    if (within(WithinValue, m_drive->GetLeftEncoderPos(), RealEncoderLeft) && within(WithinValue, m_drive->GetRightEncoderPos(), RealEncoderRight)) {
+    if (within(WithinValue, m_drive->GetLeftEncoderPos() + m_drive->GetRightEncoderPos(), RealEncoderLeft + RealEncoderRight) && within(WithinValue, m_drive->GetRightEncoderPos(), RealEncoderRight)) {
         return true;
     }
 

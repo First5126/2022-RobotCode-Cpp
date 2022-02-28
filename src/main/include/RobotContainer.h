@@ -53,7 +53,7 @@ class RobotContainer {
   IntakeSubsystem m_intake;
 
 
-
+  frc2::SequentialCommandGroup EasyAuto(std::string input);
 
   void ConfigureButtonBindings();
 };

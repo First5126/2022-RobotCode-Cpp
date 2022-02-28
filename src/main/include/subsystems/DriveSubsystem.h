@@ -57,6 +57,9 @@ class DriveSubsystem : public frc2::SubsystemBase {
   // Reset the encoders on the drive motors
   void ResetEncoders();
 
+  // tank drive
+  void TankDrive(double left, double right);
+
   // Get the distance that the robot has travled from both motors
   double GetAverageEncoderDistance();
 
@@ -83,6 +86,7 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   double SetLeftSpeed(double speed);
   double SetRightSpeed(double speed);
+
 
   // Get the wheel speeds
   //frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();

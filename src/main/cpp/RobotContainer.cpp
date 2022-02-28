@@ -7,14 +7,46 @@
 #include <iostream>
 #include "frc2/command/RunCommand.h"
 #include "commands/DefaultDriveCommand.h"
+#include "commands/ShooterCommand.h"
+
+std::vector<std::string> split(std::string text, char delim) {
+    std::string line;
+    std::vector<std::string> vec;
+    std::stringstream ss(text);
+
+    while(std::getline(ss, line, delim)) {
+        vec.push_back(line);
+    }
+
+    return vec;
+}
+
+frc2::SequentialCommandGroup RobotContainer::EasyAuto(std::string input) {
+  std::vector<std::string> lines = split(input, '\n');
+
+  frc2::SequentialCommandGroup group {};
+
+  for (auto i : lines) {
+    std::vector<std::string> operations = split(i, ' ');
+
+    if (operations.size() != 2) std::cout << "[ERROR]: Too many, or to little operations in file! Commands should look like `[CMD] (ARGS)`!" << std::endl;
+
+    auto cmd = operations[0]; 
+    auto opperand = std::stof(operations[1]);
+
+    if (cmd == "Drive") group.AddCommands(DriveDistance(&m_drive, [this, opperand]() { return opperand; }));
+    else if (cmd == "Shoot") group.AddCommands(ShooterCommand(&m_shooter, [this, opperand]() { return opperand; }));
+    else if (cmd == "Turn") ;
+    else std::cout << "[ERROR]: \'" << cmd << "\' IS NOT FOUND!" << std::endl;
+  }
+
+  return group;
+}
 
 RobotContainer::RobotContainer() 
   : m_autonomousCommand(&m_drive)
     {
   // Initialize all of your commands and subsystems here
-
-  
-
 
 
   m_drive.SetDefaultCommand( DefaultDrive {
@@ -36,21 +68,27 @@ void RobotContainer::ConfigureButtonBindings() {
   // the power that the shooter needs to run at
   // for us to get the ball into the goal!
   frc2::JoystickButton(&m_driverController, 1)
-  .WhenPressed ([this]() {m_shooter.RunShooter(10000); }) // Example Speed FIXME!
-  .WhenReleased([this]() {m_shooter.StopAll();         });
+  .WhenPressed ( new ShooterCommand{&m_shooter, [this]() {return 2850;} } ); // Example Speed FIXME!
 
   // This will run the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 2)
-  .WhenPressed ([this]() {m_intake.RunIntake();    })
-  .WhenReleased([this]() {m_intake.StopIntake();   });
+  .WhenPressed ([this]() {m_shooter.FeedBall();    })
+  .WhenReleased([this]() {m_shooter.StopFeedBall();   });
 
   // Toggle the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 4)
   .WhenPressed ([this]() {m_intake.ToggleIntake(); });
 
+  std::string auto_code = R"(
+    Drive 10
+    Shoot 2850
+    Drive -10
+    Turn 0
+  )";
+
 
   frc2::JoystickButton(&m_driverController, 3)
-  .WhenPressed ( new DriveDistance(&m_drive, [this]() {return -10.0; }) );
+  .WhenPressed ( this->EasyAuto(auto_code) );
 
   
 

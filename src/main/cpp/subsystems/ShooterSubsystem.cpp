@@ -17,33 +17,22 @@
 
 #include <iostream>
 
-ShooterSubsystem::ShooterSubsystem() {
-    this->ShooterLeft  = new rev::CANSparkMax(21, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
-    this->ShooterRight = new rev::CANSparkMax(22, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+ShooterSubsystem::ShooterSubsystem()
+{
+    this->ShooterLeft  = new rev::CANSparkMax(31, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+    this->ShooterRight = new rev::CANSparkMax(32, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
-    std::cout << "Shooter Subsystem - " << "Checking motors..." << std::endl;
+   
+    //this->ShooterLeft->SetInverted(true);
 
-    assert(this->ShooterLeft != nullptr);
-    assert(this->ShooterRight != nullptr);
+    this->m_shooter_encoder = new rev::SparkMaxRelativeEncoder {this->ShooterLeft->GetEncoder()}; 
 
-    std::cout << "\tSparkMax\tOK" << std::endl;
+}
 
-    assert(&this->FeederMotor != nullptr);
-
-    std::cout << "\tTalonSRX\tOK" << std::endl;
-
-    bool motors_ok = 
-        this->ShooterLeft->GetBusVoltage() > 0 &&
-        this->ShooterRight->GetBusVoltage() > 0 &&
-        this->FeederMotor.GetBusVoltage() > 0;
-
-    std::cout << "\tMOTORS\t" << (motors_ok ? "OK" : "FAIL") << std::endl;
-
-    this->ShooterRight->Follow(*this->ShooterLeft);
-    this->ShooterRight->SetInverted(true);
-
-    m_pid.SetPID(Shooter_Kp, Shooter_Ki, Shooter_Kd);
-
+ShooterSubsystem::~ShooterSubsystem() {
+    
+    free(this->ShooterLeft);
+    free(this->ShooterRight);
 }
 
 void ShooterSubsystem::Periodic() {
@@ -51,23 +40,34 @@ void ShooterSubsystem::Periodic() {
 }
 
 void ShooterSubsystem::RunShooter(double speed) {
-    m_pid.SetSetpoint(speed * 24.00);
+    this->m_pid.SetSetpoint(speed);
 
-    auto ShooterSpeed = m_pid.Calculate(this->GetShooterSpeed());
+    double RunningSpeed = this->m_pid.Calculate(this->GetShooterSpeed());
+    if (speed <= 0) RunningSpeed = 0;
 
-    this->ShooterLeft->Set(ShooterSpeed);
+    if (RunningSpeed < 0) RunningSpeed = 0;
+    if (RunningSpeed > 1) RunningSpeed = 1;
+
+    std::cout << "Running Speed: " << RunningSpeed << " --- " << this->GetShooterSpeed() << std::endl;
+
+    this->ShooterLeft->Set(-RunningSpeed);
+    this->ShooterRight->Set(-RunningSpeed);
 }
 
 double ShooterSubsystem::GetShooterSpeed() {
-    return this->ShooterLeft->GetEncoder().GetVelocity();
+    return -m_shooter_encoder->GetVelocity();
 }
 
 bool ShooterSubsystem::IsShooterAtSpeed(double speed) {
-    return this->GetShooterSpeed() >= speed;
+    //bool at_speed = 0;
+
+    return ( fabs(this->GetShooterSpeed() - speed) <= (speed * 0.03) );
+
+    //return this->GetShooterSpeed() >= speed - (speed * 0.01);
 }
 
 void ShooterSubsystem::FeedBall() {
-    this->FeederMotor.Set(1);
+    this->FeederMotor.Set(-1);
 }
 
 void ShooterSubsystem::StopFeedBall() {
@@ -77,5 +77,14 @@ void ShooterSubsystem::StopFeedBall() {
 void ShooterSubsystem::StopAll() {
     this->StopFeedBall();
     this->RunShooter(0);
-    this->ShooterLeft->Set(0);
+    this->shooter_speed = 0;
+    m_pid.Reset();
+}
+
+bool ShooterSubsystem::ContainsBall() {
+    uint32_t sensorValue = m_sensor.GetProximity();
+
+    double sensorFlipped = fabs(2047 - sensorValue);
+
+    return sensorFlipped < 1730;
 }

@@ -17,7 +17,7 @@
 
 IntakeSubsystem::IntakeSubsystem() {
     std::cout << "IntakeSubsystem init - Checking Motors..." << std::endl;
-    this->IntakeMotor = new rev::CANSparkMax(20, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+    this->IntakeMotor = new rev::CANSparkMax(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
     assert(this->IntakeMotor != nullptr);
     std::cout << "Motors\tOK" << std::endl;
