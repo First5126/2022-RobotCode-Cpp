@@ -21,12 +21,24 @@ class TurnDegrees
    *
    * @param subsystem The subsystem used by this command.
    */
-  explicit TurnDegrees(DriveSubsystem* subsystem);
+  explicit TurnDegrees(DriveSubsystem* subsystem, std::function<double()> forward);
 
   void Initialize() override;
   void Execute() override;
+  void End(bool interrup) override;
+  bool IsFinished() override;
 
 
  private:
-  DriveSubsystem* m_subsystem;
+  DriveSubsystem* m_drive;
+
+  bool is_done = false;
+
+  std::function<double()> m_turn;
+
+  double init_angle = 0;
+  double target_angle = 0;
+
+  frc::PIDController m_left_pid {0.000014, 0.00002, 0};
+  frc::PIDController m_right_pid {0.000014, 0.00002, 0};
 };

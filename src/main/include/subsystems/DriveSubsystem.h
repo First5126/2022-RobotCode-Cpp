@@ -88,6 +88,8 @@ class DriveSubsystem : public frc2::SubsystemBase {
   double SetRightSpeed(double speed);
 
 
+  bool CheckMotors();
+
   // Get the wheel speeds
   //frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
 

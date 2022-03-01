@@ -23,6 +23,26 @@ DriveSubsystem::~DriveSubsystem() {
     std::cout << "Deconstruct!" << std::endl;
 }
 
+bool DriveSubsystem::CheckMotors() {
+    bool motors_ok = 
+    LFMotor.GetBusVoltage() > 10 &&
+    LBMotor.GetBusVoltage() > 10 &&
+    RFMotor.GetBusVoltage() > 10 &&
+    RBMotor.GetBusVoltage() > 10 ;
+
+    if (!motors_ok) {
+        std::cout << "\n\n\nMOTOR FAILED !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+        std::cout << "\tMOTOR:" << std::endl;
+
+        // Output Which Motor has failed
+
+        std::cout << "\t\tLF\t" << ( LFMotor.GetBusVoltage() > 10 ? "OK" : "FAIL" ) << std::endl;
+        std::cout << "\t\tLB\t" << ( LBMotor.GetBusVoltage() > 10 ? "OK" : "FAIL" ) << std::endl;
+        std::cout << "\t\tRF\t" << ( RFMotor.GetBusVoltage() > 10 ? "OK" : "FAIL" ) << std::endl;
+        std::cout << "\t\tRB\t" << ( RBMotor.GetBusVoltage() > 10 ? "OK" : "FAIL" ) << std::endl;
+    }
+}
+
 DriveSubsystem::DriveSubsystem() {
     std::cout << "DriveSubSystem INIT  -  ";
     std::cout << "Checking Motors..." << std::endl;
@@ -44,30 +64,7 @@ DriveSubsystem::DriveSubsystem() {
 
     std::cout << "\tMotorGroup\tOK" << std::endl;
 
-    bool motors_ok = 
-    LFMotor.IsAlive() &&
-    LBMotor.IsAlive() &&
-    RFMotor.IsAlive() &&
-    RBMotor.IsAlive()  ;
-
-    m_right.SetInverted(true);
-    
-
-    std::cout << "\tMotors\t" << (motors_ok ? "OK" : "FAIL") << std::endl;
-
-    if (!motors_ok) {
-        std::cout << "\tMOTOR:" << std::endl;
-
-        std::cout << "\t\tLF\t" << ( LFMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-        std::cout << "\t\tLB\t" << ( LBMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-        std::cout << "\t\tRF\t" << ( RFMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-        std::cout << "\t\tRB\t" << ( RBMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-    
-
-        // This can be changed later, but it makes our program fail
-        // if any of the motors are not plugged in!
-        assert(motors_ok);
-    }
+    CheckMotors();
 
 }
 
@@ -76,23 +73,7 @@ void DriveSubsystem::Periodic()  {
     // Make sure our our motors are always OK, this helps
     // with electrical problems in the future because we will tell
     // which motors got unplugged!
-    bool motors_ok = 
-    LFMotor.IsAlive() &&
-    LBMotor.IsAlive() &&
-    RFMotor.IsAlive() &&
-    RBMotor.IsAlive()  ;
-
-    if (!motors_ok) {
-        std::cout << "\n\n\nMOTOR FAILED !!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-        std::cout << "\tMOTOR:" << std::endl;
-
-        // Output Which Motor has failed
-
-        std::cout << "\t\tLF\t" << ( LFMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-        std::cout << "\t\tLB\t" << ( LBMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-        std::cout << "\t\tRF\t" << ( RFMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-        std::cout << "\t\tRB\t" << ( RBMotor.IsAlive() ? "OK" : "FAIL" ) << std::endl;
-    }
+    CheckMotors();
 }
 
 void DriveSubsystem::TankDrive(double left, double right) {
