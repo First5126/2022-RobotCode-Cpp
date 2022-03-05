@@ -51,8 +51,8 @@ RobotContainer::RobotContainer()
 
   m_drive.SetDefaultCommand( DefaultDrive {
     &m_drive,
-    [this]() { return -m_driverController.GetLeftY(); },
-    [this]() { return m_driverController.GetRightX(); } 
+    [this]() { return m_driverController.GetRightX(); },
+    [this]() { return -m_driverController.GetLeftY(); } 
   });
 
   
@@ -87,8 +87,15 @@ void RobotContainer::ConfigureButtonBindings() {
   )";
 
 
+  /*frc2::JoystickButton(&m_driverController, 3)
+  .WhenPressed ( this->EasyAuto(auto_code) );*/
+
   frc2::JoystickButton(&m_driverController, 3)
-  .WhenPressed ( this->EasyAuto(auto_code) );
+  .WhenPressed(
+    new frc2::SequentialCommandGroup(
+      ShooterCommand(&m_shooter, []() {return 1000;})
+    )
+  );
 
   
 
