@@ -40,11 +40,19 @@ void DriveDistance::Execute() {
     double RealEncoderLeft = this->EncoderSetLeftValue + this->EncoderStartLeftValue;
     double RealEncoderRight = this->EncoderSetRightValue + this->EncoderStartRightValue;
 
-    this->m_left_pid.SetSetpoint(RealEncoderLeft);
-    this->m_right_pid.SetSetpoint(RealEncoderRight);
+    m_left_pid.SetTolerance(1);
+    m_right_pid.SetTolerance(1);
 
-    double driveLeft = this->m_left_pid.Calculate(this->m_drive->GetLeftEncoderPos());
-    double driveRight = this->m_right_pid.Calculate(this->m_drive->GetRightEncoderPos());
+    this->m_left_pid.SetSetpoint(RealEncoderLeft / 4096);
+    this->m_right_pid.SetSetpoint(RealEncoderRight / 4096 );
+
+    double driveLeft = this->m_left_pid.Calculate(this->m_drive->GetLeftEncoderPos() / 4096);
+    double driveRight = this->m_right_pid.Calculate(this->m_drive->GetRightEncoderPos() / 4096);
+
+    driveLeft = std::clamp(driveLeft, -0.8, 0.8);
+    driveRight = std::clamp(driveRight, -0.8, 0.8);
+
+    std::cout << "SPEED: " << driveLeft << ", " << driveRight << " --> " << RealEncoderLeft - this->m_drive->GetLeftEncoderPos() << std::endl;
 
     m_drive->TankDrive(driveLeft, driveRight);
 

@@ -52,6 +52,8 @@ DriveSubsystem::DriveSubsystem() {
     // Basicly if our drivetrain is not working, we dont want to drive
     // the robot at all!
 
+    this->m_right.SetInverted(true);
+
     assert(&LBMotor != nullptr);
     assert(&LFMotor != nullptr);
     assert(&RBMotor != nullptr);

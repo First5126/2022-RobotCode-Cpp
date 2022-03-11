@@ -54,8 +54,8 @@ RobotContainer::RobotContainer()
 
   m_drive.SetDefaultCommand( DefaultDrive {
     &m_drive,
-    [this]() { return m_driverController.GetRightX(); },
-    [this]() { return -m_driverController.GetLeftY(); } 
+    [this]() { return -m_driverController.GetLeftY(); },
+    [this]() { return m_driverController.GetRightX(); } 
   });
 
 
@@ -74,7 +74,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // for us to get the ball into the goal!
   // 2850 5000
   frc2::JoystickButton(&m_driverController, 1)
-  .WhenPressed ( new DriveDistance(&m_drive, []() { return 10; }) ); // Example Speed FIXME!
+  .WhenPressed ( new DriveDistance(&m_drive, []() { return 2; }) ); // Example Speed FIXME!
 
   // This will run the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 2)
