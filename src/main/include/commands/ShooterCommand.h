@@ -21,7 +21,7 @@ class ShooterCommand
    *
    * @param subsystem The subsystem used by this command.
    */
-  explicit ShooterCommand(ShooterSubsystem* subsystem, std::function<double()> speed);
+  explicit ShooterCommand(ShooterSubsystem* subsystem, std::function<double()> speed, std::function<int()> hood);
 
 
   void Initialize() override;
@@ -37,6 +37,7 @@ class ShooterCommand
   ShooterSubsystem* m_shooter;
 
   std::function<double()> m_shooting_speed;
+  std::function<int()> m_hood;
 
   bool IsBallInShooter = 0;
   bool IsCurrentlyShooting = 0;

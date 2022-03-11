@@ -22,7 +22,9 @@
 #include "rev/CANSparkMax.h"
 #include <wpi/numbers>
 #include <frc/controller/PIDController.h>
+#include <frc/DigitalInput.h>
 #include "rev/RelativeEncoder.h"
+#include <frc/Encoder.h>
 
 
 class ShooterSubsystem : public frc2::SubsystemBase {
@@ -56,11 +58,27 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   bool ContainsBall();
 
   bool IsCurrectColor();
+
+  bool IsLimitReached();
+  void resetHood();
+  
+  void SetHoodSpeed(double speed);
+
+  // Set the hood to pos
+  void SetHoodToPos(int pos);
+
+  bool HasShooterBeenReset();
+
+  bool IsHoodAtPos(int pos);
+
+  int GetHoodPos();
   
 
  private:
   rev::CANSparkMax *ShooterLeft;
   rev::CANSparkMax *ShooterRight;
+
+  rev::CANSparkMax *Hood;
 
   WPI_TalonSRX FeederMotor {15};
 
@@ -68,12 +86,19 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   double Shooter_Ki = 0;
   double Shooter_Kd = 0;
 
-  frc::PIDController m_pid {0.0002, 0.0005, 0.000001};
+  frc::PIDController m_pid {0.0100, 0.0000, 0.000000};
 
   double shooter_speed = 0;
 
   rev::SparkMaxRelativeEncoder *m_shooter_encoder;
+  //rev::SparkMaxAlternateEncoder *m_hood_encoder;
+
+  frc::Encoder hood_encoder {5, 6};
 
 
   rev::ColorSensorV3 m_sensor {frc::I2C::Port::kOnboard} ;
+
+  frc::DigitalInput hood_limit {9};
+
+  bool ShooterReset = false;
 };

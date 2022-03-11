@@ -8,6 +8,8 @@
 #include "frc2/command/RunCommand.h"
 #include "commands/DefaultDriveCommand.h"
 #include "commands/ShooterCommand.h"
+#include "commands/HoodCommand.h"
+
 
 std::vector<std::string> split(std::string text, char delim) {
     std::string line;
@@ -19,23 +21,24 @@ std::vector<std::string> split(std::string text, char delim) {
     }
 
     return vec;
+
 }
 
-frc2::SequentialCommandGroup RobotContainer::EasyAuto(std::string input) {
+frc2::SequentialCommandGroup* RobotContainer::EasyAuto(std::string input) {
   std::vector<std::string> lines = split(input, '\n');
 
-  frc2::SequentialCommandGroup group {};
+  frc2::SequentialCommandGroup* group = new frc2::SequentialCommandGroup{};
 
   for (auto i : lines) {
     std::vector<std::string> operations = split(i, ' ');
 
-    if (operations.size() != 2) std::cout << "[ERROR]: Too many, or to little operations in file! Commands should look like `[CMD] (ARGS)`!" << std::endl;
+    if (operations.size() != 2) std::cout << "[ERROR]: Too many, or to little operations in file! Commands should look like `[CMD] (ARGS)`!" << std::endl << "Command looked like: " << i << std::endl;
 
     auto cmd = operations[0]; 
     auto opperand = std::stof(operations[1]);
 
-    if (cmd == "Drive") group.AddCommands(DriveDistance(&m_drive, [this, opperand]() { return opperand; }));
-    else if (cmd == "Shoot") group.AddCommands(ShooterCommand(&m_shooter, [this, opperand]() { return opperand; }));
+    if (cmd == "Drive") group->AddCommands(DriveDistance(&m_drive, [this, opperand]() { return opperand; }));
+    //else if (cmd == "Shoot") group->AddCommands(ShooterCommand(&m_shooter, [this, opperand]() { return opperand; }));
     else if (cmd == "Turn") ;
     else std::cout << "[ERROR]: \'" << cmd << "\' IS NOT FOUND!" << std::endl;
   }
@@ -55,6 +58,8 @@ RobotContainer::RobotContainer()
     [this]() { return -m_driverController.GetLeftY(); } 
   });
 
+
+  m_compressor.EnableDigital();
   
   // Configure the button bindings
   ConfigureButtonBindings();
@@ -67,13 +72,14 @@ void RobotContainer::ConfigureButtonBindings() {
   // This will allow us to automaticly determine 
   // the power that the shooter needs to run at
   // for us to get the ball into the goal!
+  // 2850 5000
   frc2::JoystickButton(&m_driverController, 1)
-  .WhenPressed ( new ShooterCommand{&m_shooter, [this]() {return 2850;} } ); // Example Speed FIXME!
+  .WhenPressed ( new DriveDistance(&m_drive, []() { return 10; }) ); // Example Speed FIXME!
 
   // This will run the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 2)
-  .WhenPressed ([this]() {m_shooter.FeedBall();    })
-  .WhenReleased([this]() {m_shooter.StopFeedBall();   });
+  .WhenPressed ([this]() {m_intake.DeployIntake(); m_intake.RunIntake();    })
+  .WhenReleased([this]() {m_intake.RetractIntake(); m_intake.StopAll();   });
 
   // Toggle the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 4)
@@ -87,20 +93,40 @@ void RobotContainer::ConfigureButtonBindings() {
   )";
 
 
-  /*frc2::JoystickButton(&m_driverController, 3)
-  .WhenPressed ( this->EasyAuto(auto_code) );*/
+  //frc2::JoystickButton(&m_driverController, 3)
+  //.WhenPressed ( this->EasyAuto(auto_code) );
 
   frc2::JoystickButton(&m_driverController, 3)
   .WhenPressed(
     new frc2::SequentialCommandGroup(
-      ShooterCommand(&m_shooter, []() {return 1000;})
+      ShooterCommand(&m_shooter, []() {return 2250;}, []() {return 1000;})
     )
   );
 
+  frc2::JoystickButton(&m_driverController, 5)
+  .WhenPressed(
+    [this]() { m_compressor.Disable(); }
+  );
+
+  frc2::JoystickButton(&m_driverController, 6)
+  .WhenPressed(
+    [this]() { m_compressor.EnableDigital(); }
+  );
+
+  frc2::JoystickButton(&m_driverController, 7)
+  .WhenPressed(
+    new HoodCommand(&m_shooter, []() {return 0; })
+  );
+
+  frc2::JoystickButton(&m_driverController, 8)
+  .WhenPressed(
+    new HoodCommand(&m_shooter, []() {return 5010; })
+  );
   
 
   frc2::JoystickButton(&m_driverController, 9)
-  .WhenPressed ([this]() {m_drive.ArcadeDrive(0,0);});
+  .WhenPressed ([this]() { m_intake.RunIntake(); })
+  .WhenReleased([this]() { m_intake.StopAll(); });
 
 }
 

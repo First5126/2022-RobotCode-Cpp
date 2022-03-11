@@ -24,7 +24,7 @@
 #include <frc2/command/RamseteCommand.h>
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
-
+#include <frc/Compressor.h>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -41,7 +41,9 @@ class RobotContainer {
 
   void ResetAll();
 
- private:
+  frc::Compressor m_compressor{30, frc::PneumaticsModuleType::REVPH};
+
+ public:
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;
@@ -53,7 +55,9 @@ class RobotContainer {
   IntakeSubsystem m_intake;
 
 
-  frc2::SequentialCommandGroup EasyAuto(std::string input);
+  frc2::SequentialCommandGroup* EasyAuto(std::string input);
 
   void ConfigureButtonBindings();
+
+  
 };

@@ -20,6 +20,9 @@
 #include "rev/CANSparkMax.h"
 #include <wpi/numbers>
 #include <frc/controller/PIDController.h>
+#include <frc/Compressor.h>
+#include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
 
 class IntakeSubsystem : public frc2::SubsystemBase {
  public:
@@ -51,6 +54,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
  private:
  rev::CANSparkMax* IntakeMotor;
 
- // TODO: Pnumatics Here aswell
-  
+ bool IntakeState = false;
+ 
+ frc::DoubleSolenoid m_arm {30, frc::PneumaticsModuleType::REVPH, 0, 1}; 
 };

@@ -17,10 +17,12 @@
 
 IntakeSubsystem::IntakeSubsystem() {
     std::cout << "IntakeSubsystem init - Checking Motors..." << std::endl;
-    this->IntakeMotor = new rev::CANSparkMax(0, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
+    this->IntakeMotor = new rev::CANSparkMax(35, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
     assert(this->IntakeMotor != nullptr);
     std::cout << "Motors\tOK" << std::endl;
+
+    this->m_arm.Set(frc::DoubleSolenoid::kForward);
 }
 
 void IntakeSubsystem::Periodic() {
@@ -28,15 +30,17 @@ void IntakeSubsystem::Periodic() {
 }
 
 void IntakeSubsystem::DeployIntake() {
-    // TODO: Switch the state of the pistons
+    this->IntakeState = true;
+    this->m_arm.Set(frc::DoubleSolenoid::kReverse);
 }
 
 void IntakeSubsystem::RetractIntake() {
-    // TODO: Switch the state of the pistions
+    this->IntakeState = false;
+    this->m_arm.Set(frc::DoubleSolenoid::kForward);
 }
 
 void IntakeSubsystem::ToggleIntake() {
-    // TODO: Switch the state of the pistions
+    this->m_arm.Set(this->IntakeState ? frc::DoubleSolenoid::kReverse : frc::DoubleSolenoid::kForward );
 }
 
 void IntakeSubsystem::RunIntake() {

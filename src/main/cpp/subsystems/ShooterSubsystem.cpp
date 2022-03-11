@@ -22,10 +22,15 @@ ShooterSubsystem::ShooterSubsystem()
     this->ShooterLeft  = new rev::CANSparkMax(31, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
     this->ShooterRight = new rev::CANSparkMax(32, rev::CANSparkMaxLowLevel::MotorType::kBrushless);
 
+    this->Hood = new rev::CANSparkMax(50, rev::CANSparkMaxLowLevel::MotorType::kBrushed);
+
+    //this->Hood->SetInverted(true);
    
     //this->ShooterLeft->SetInverted(true);
 
     this->m_shooter_encoder = new rev::SparkMaxRelativeEncoder {this->ShooterLeft->GetEncoder()}; 
+
+    //this->m_hood_encoder = new rev::SparkMaxAlternateEncoder {this->Hood->GetAlternateEncoder(rev::CANEncoder::AlternateEncoderType::kQuadrature, 8196) };
 
 }
 
@@ -61,9 +66,27 @@ double ShooterSubsystem::GetShooterSpeed() {
 bool ShooterSubsystem::IsShooterAtSpeed(double speed) {
     //bool at_speed = 0;
 
-    return ( fabs(this->GetShooterSpeed() - speed) <= (speed * 0.03) );
+    return ( fabs(this->GetShooterSpeed() - speed) <= 50 );
 
     //return this->GetShooterSpeed() >= speed - (speed * 0.01);
+}
+
+bool ShooterSubsystem::IsLimitReached() {
+    return !this->hood_limit.Get();
+}
+
+void ShooterSubsystem::resetHood() {
+    this->hood_encoder.Reset();
+}
+
+void ShooterSubsystem::SetHoodSpeed(double speed) {
+    //if (this->IsLimitReached() && speed < 0) return;
+    
+   this->Hood->Set(speed); 
+}  
+
+int ShooterSubsystem::GetHoodPos() {
+    return -this->hood_encoder.GetRaw();
 }
 
 void ShooterSubsystem::FeedBall() {
@@ -74,11 +97,55 @@ void ShooterSubsystem::StopFeedBall() {
     this->FeederMotor.Set(0);
 }
 
+void ShooterSubsystem::SetHoodToPos(int pos) {
+
+    if (this->IsLimitReached()) {
+        this->ShooterReset = true;
+        this->resetHood();
+    }
+
+    if (this->HasShooterBeenReset()) {
+        double diff = fabs(pos - this->GetHoodPos());
+
+        if (diff > 100) {
+            if (pos > this->GetHoodPos()) {
+                this->SetHoodSpeed(-0.5);
+            }
+            else {
+                this->SetHoodSpeed(0.5);
+            }
+        }
+        else {
+            this->SetHoodSpeed(0);
+            std::cout << "Hood set to pos : " << this->GetHoodPos() << std::endl;
+        }
+    }
+    else {
+        std::cout << "RESETING..." << std::endl;
+        if (!this->IsLimitReached()){
+            this->SetHoodSpeed(1);
+        }
+    }
+
+    
+}
+
+bool ShooterSubsystem::IsHoodAtPos(int pos) {
+    double diff = fabs(pos - this->GetHoodPos());
+
+    return (diff < 100);
+}
+
 void ShooterSubsystem::StopAll() {
     this->StopFeedBall();
     this->RunShooter(0);
     this->shooter_speed = 0;
     m_pid.Reset();
+    this->SetHoodSpeed(0);
+}
+
+bool ShooterSubsystem::HasShooterBeenReset() {
+    return this->ShooterReset;
 }
 
 bool ShooterSubsystem::ContainsBall() {

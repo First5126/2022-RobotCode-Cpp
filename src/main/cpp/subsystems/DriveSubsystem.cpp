@@ -73,7 +73,7 @@ void DriveSubsystem::Periodic()  {
     // Make sure our our motors are always OK, this helps
     // with electrical problems in the future because we will tell
     // which motors got unplugged!
-    CheckMotors();
+    //CheckMotors();
 }
 
 void DriveSubsystem::TankDrive(double left, double right) {
