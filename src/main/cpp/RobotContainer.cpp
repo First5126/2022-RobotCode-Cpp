@@ -9,7 +9,15 @@
 #include "commands/DefaultDriveCommand.h"
 #include "commands/ShooterCommand.h"
 #include "commands/HoodCommand.h"
+#include "commands/TurnDegreesCommand.h"
+#include "commands/IntakeCommand.h"
 
+#include <frc2/command/ParallelCommandGroup.h>
+
+
+bool isfinished() {
+  return false;
+}
 
 std::vector<std::string> split(std::string text, char delim) {
     std::string line;
@@ -74,7 +82,21 @@ void RobotContainer::ConfigureButtonBindings() {
   // for us to get the ball into the goal!
   // 2850 5000
   frc2::JoystickButton(&m_driverController, 1)
-  .WhenPressed ( new DriveDistance(&m_drive, []() { return 2; }) ); // Example Speed FIXME!
+  .WhenPressed ( 
+    frc2::SequentialCommandGroup (
+      frc2::ParallelCommandGroup {
+        frc2::SequentialCommandGroup {
+          DriveDistance{&m_drive, []() {return  5; }},
+          DriveDistance{&m_drive, []() {return -5; }},
+          frc2::InstantCommand([this]() { this->intake_in = true; })
+        },
+        IntakeCommand(&m_intake, [this]() {return this->intake_in; })
+      },
+      frc2::InstantCommand([this]() { this->intake_in = false; }),
+      ShooterCommand(&m_shooter, []() {return 3000; }, []() {return 1000; })
+    )
+    
+  ); // Example Speed FIXME!
 
   // This will run the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 2)
@@ -83,23 +105,25 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // Toggle the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 4)
-  .WhenPressed ([this]() {m_intake.ToggleIntake(); });
+  .WhenPressed ([this]() { m_shooter.acuateServo(-1); })
+  .WhenReleased([this]() { m_shooter.acuateServo(0.5); });
 
-  std::string auto_code = R"(
-    Drive 10
-    Shoot 2850
-    Drive -10
-    Turn 0
-  )";
 
 
   //frc2::JoystickButton(&m_driverController, 3)
   //.WhenPressed ( this->EasyAuto(auto_code) );
 
+  // 27in 2500 1000
+  // 12in 2500 1500
+  //  0in 2250 2000
+  // 36in 2500  900
+  // 48in 2500  850
+  // 
+
   frc2::JoystickButton(&m_driverController, 3)
   .WhenPressed(
     new frc2::SequentialCommandGroup(
-      ShooterCommand(&m_shooter, []() {return 2250;}, []() {return 1000;})
+      ShooterCommand(&m_shooter, []() {return 2000;}, []() {return 2000;})
     )
   );
 
@@ -123,10 +147,12 @@ void RobotContainer::ConfigureButtonBindings() {
     new HoodCommand(&m_shooter, []() {return 5010; })
   );
   
-
   frc2::JoystickButton(&m_driverController, 9)
   .WhenPressed ([this]() { m_intake.RunIntake(); })
   .WhenReleased([this]() { m_intake.StopAll(); });
+
+  frc2::JoystickButton(&m_driverController, 10)
+  .WhenPressed ([this]() { m_drive.ToggleShift(); });
 
 }
 

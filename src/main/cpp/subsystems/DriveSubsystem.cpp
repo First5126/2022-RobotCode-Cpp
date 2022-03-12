@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include "frc/shuffleboard/Shuffleboard.h"
+#include "frc/AnalogGyro.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 
 DriveSubsystem::~DriveSubsystem() {
@@ -51,6 +52,8 @@ DriveSubsystem::DriveSubsystem() {
     // are plugged in and working before we can start doing anything. 
     // Basicly if our drivetrain is not working, we dont want to drive
     // the robot at all!
+
+    gyro.Reset();
 
     this->m_right.SetInverted(true);
 
@@ -127,8 +130,8 @@ double DriveSubsystem::GetRightEncoderPos() {
 void DriveSubsystem::SetMaxSpeed(double speed) {
     m_drive.SetMaxOutput(speed);
 }
-units::degree_t DriveSubsystem::GetHeading() const {
-    // TODO
+double DriveSubsystem::GetHeading() {
+    return gyro.GetAngle();
 }
 
 double DriveSubsystem::GetTurnRate() {
@@ -147,11 +150,19 @@ double DriveSubsystem::CalcualteDriveEncoder(double ft) {
     return Encoder_rotations;
 }
 
+void DriveSubsystem::resetHeading() {
+    this->gyro.Reset();
+}
+
+void DriveSubsystem::ToggleShift() {
+    this->ShiftedState = !this->ShiftedState;
+
+    this->left_piston.Set(this->ShiftedState);
+    this->right_piston.Set(this->ShiftedState);
+}
+
 //frc::DifferentialDriveWheelSpeeds DriveSubsystem::GetWheelSpeeds() {
     //frc::DifferentialDriveWheelSpeeds speed;
     //speed.left  = LFMotor.GetActiveTrajectoryVelocity(1) ;
     //speed.right = RFMotor.GetActiveTrajectoryVelocity(1);
 //}
-void DriveSubsystem::ResetOdometry(frc::Pose2d pose) {
-    m_tacker.ResetPosition(pose, this->GetHeading());
-}

@@ -39,6 +39,5 @@ class TurnDegrees
   double init_angle = 0;
   double target_angle = 0;
 
-  frc::PIDController m_left_pid {0.000014, 0.00002, 0};
-  frc::PIDController m_right_pid {0.000014, 0.00002, 0};
+  frc::PIDController m_left_pid {0.02, 0.2, 0};
 };

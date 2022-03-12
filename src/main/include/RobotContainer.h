@@ -44,6 +44,9 @@ class RobotContainer {
   frc::Compressor m_compressor{30, frc::PneumaticsModuleType::REVPH};
 
  public:
+
+  bool intake_in = false;
+
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
   ExampleCommand m_autonomousCommand;

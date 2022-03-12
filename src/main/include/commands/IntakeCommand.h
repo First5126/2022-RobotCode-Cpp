@@ -3,8 +3,7 @@
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
 
-#include "subsystems/ShooterSubsystem.h"
-
+#include "subsystems/IntakeSubsystem.h"
 
 /**
  * An example command that uses an example subsystem.
@@ -13,15 +12,15 @@
  * directly; this is crucially important, or else the decorator functions in
  * Command will *not* work!
  */
-class ShooterCommand
-    : public frc2::CommandHelper<frc2::CommandBase, ShooterCommand> {
+class IntakeCommand
+    : public frc2::CommandHelper<frc2::CommandBase, IntakeCommand> {
  public:
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  explicit ShooterCommand(ShooterSubsystem* subsystem, std::function<double()> speed, std::function<int()> hood);
+  explicit IntakeCommand(IntakeSubsystem* subsystem, std::function<bool()> overrideFinish);
 
 
   void Initialize() override;
@@ -34,17 +33,11 @@ class ShooterCommand
 
 
  private:
-  ShooterSubsystem* m_shooter;
+  IntakeSubsystem* m_intake;
 
-  std::function<double()> m_shooting_speed;
-  std::function<int()> m_hood;
+  bool lastState = false;
 
-  int donefor = 0;
+  int ticks = 0;
 
-  int validPeriod = 0;
-
-  int feedingTicks = 0;
-
-  bool IsBallInShooter = 0;
-  bool IsCurrentlyShooting = 0;
+  std::function<bool()> m_override;
 };

@@ -25,6 +25,8 @@
 #include <frc/DigitalInput.h>
 #include "rev/RelativeEncoder.h"
 #include <frc/Encoder.h>
+#include <frc/Servo.h>
+
 
 
 class ShooterSubsystem : public frc2::SubsystemBase {
@@ -72,6 +74,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   bool IsHoodAtPos(int pos);
 
   int GetHoodPos();
+
+  void acuateServo(double angle);
   
 
  private:
@@ -86,7 +90,10 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   double Shooter_Ki = 0;
   double Shooter_Kd = 0;
 
-  frc::PIDController m_pid {0.0100, 0.0000, 0.000000};
+  double Ku = 5;
+  double time = 0.44;
+
+  frc::PIDController m_pid {0.6 * Ku, 1.2 * Ku / time, 3 * Ku * time / 40};
 
   double shooter_speed = 0;
 
@@ -95,10 +102,15 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   frc::Encoder hood_encoder {5, 6};
 
+  
+
 
   rev::ColorSensorV3 m_sensor {frc::I2C::Port::kOnboard} ;
 
+  frc::DigitalInput hopperball {7};
   frc::DigitalInput hood_limit {9};
 
   bool ShooterReset = false;
+
+  frc::Servo m_pushy {0};
 };

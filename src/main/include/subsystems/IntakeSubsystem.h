@@ -23,6 +23,7 @@
 #include <frc/Compressor.h>
 #include <frc/Solenoid.h>
 #include <frc/DoubleSolenoid.h>
+#include <frc/DigitalInput.h>
 
 class IntakeSubsystem : public frc2::SubsystemBase {
  public:
@@ -51,10 +52,15 @@ class IntakeSubsystem : public frc2::SubsystemBase {
   // Stop the motor and stop the Intake from moving
   void StopAll();
 
+  bool GetIntakeState();
+
+
  private:
  rev::CANSparkMax* IntakeMotor;
 
  bool IntakeState = false;
  
  frc::DoubleSolenoid m_arm {30, frc::PneumaticsModuleType::REVPH, 0, 1}; 
+
+ frc::DigitalInput intake_in {8};
 };

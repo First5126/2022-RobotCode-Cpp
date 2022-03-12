@@ -49,12 +49,15 @@ void DriveDistance::Execute() {
     double driveLeft = this->m_left_pid.Calculate(this->m_drive->GetLeftEncoderPos() / 4096);
     double driveRight = this->m_right_pid.Calculate(this->m_drive->GetRightEncoderPos() / 4096);
 
-    driveLeft = std::clamp(driveLeft, -0.8, 0.8);
-    driveRight = std::clamp(driveRight, -0.8, 0.8);
+    driveLeft = std::clamp(driveLeft, -10., 10.);
+    driveRight = std::clamp(driveRight, -10., 10.);
 
     std::cout << "SPEED: " << driveLeft << ", " << driveRight << " --> " << RealEncoderLeft - this->m_drive->GetLeftEncoderPos() << std::endl;
 
-    m_drive->TankDrive(driveLeft, driveRight);
+    units::voltage::volt_t leftvolt (driveLeft);
+    units::voltage::volt_t rightvolt (driveRight);
+
+    m_drive->TankDriveVolts(leftvolt, rightvolt);
 
     frc::SmartDashboard::PutNumber("Distance From Goal", RealEncoderLeft - this->m_drive->GetLeftEncoderPos());
     
@@ -69,10 +72,14 @@ bool DriveDistance::IsFinished() {
         return within_amount >= DiffernenceAmount;
     };
 
-    double WithinValue = 1000;
-    if (within(WithinValue, m_drive->GetLeftEncoderPos() + m_drive->GetRightEncoderPos(), RealEncoderLeft + RealEncoderRight) && within(WithinValue, m_drive->GetRightEncoderPos(), RealEncoderRight)) {
-        return true;
+    double WithinValue = 2000;
+    if (within(WithinValue, m_drive->GetLeftEncoderPos(), RealEncoderLeft)) {
+        ThereAccum++;
+    }
+    else {
+        ThereAccum = 0;
     }
 
-    return false;
+    return ThereAccum > 10;
+    
 }

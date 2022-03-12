@@ -54,3 +54,7 @@ void IntakeSubsystem::StopIntake() {
 void IntakeSubsystem::StopAll() {
     this->IntakeMotor->Set(0);
 }
+
+bool IntakeSubsystem::GetIntakeState() {
+    return !this->intake_in.Get();
+}

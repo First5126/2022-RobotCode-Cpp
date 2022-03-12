@@ -12,7 +12,7 @@ ShooterCommand::ShooterCommand(ShooterSubsystem* subsystem, std::function<double
 }
 
 bool ShooterCommand::IsFinished() {
-    return !IsBallInShooter;
+    return this->donefor > 50;
 }
 
 void ShooterCommand::Execute() {    
@@ -22,16 +22,42 @@ void ShooterCommand::Execute() {
 
     frc::SmartDashboard::PutNumber("Shooting Speed Difference", this->m_shooter->GetShooterSpeed() - m_shooting_speed());
 
-    if (this->m_shooter->IsShooterAtSpeed(m_shooting_speed()) && this->m_shooter->IsHoodAtPos(m_hood())) {
+    if (feedingTicks > 0 && this->m_shooter->ContainsBall()) {
         this->m_shooter->FeedBall();
-        //this->m_shooter->RunShooter(0);
-        
+        this->m_shooter->acuateServo(-1);
+
+        std::cout << "Feeding Ball!" << std::endl;
+        feedingTicks--;
     }
     else {
         this->m_shooter->StopFeedBall();
+        this->m_shooter->acuateServo(0.5);
+        feedingTicks = 0;
+    }
+
+    //std::cout << "validPeroid: " << validPeriod
+    //<< " " << this->m_shooter->IsShooterAtSpeed(m_shooting_speed()) << ":" << this->m_shooter->IsHoodAtPos(m_hood()) << std::endl;
+    
+    if (this->m_shooter->IsShooterAtSpeed(m_shooting_speed()) && this->m_shooter->IsHoodAtPos(m_hood())) {
+        validPeriod++;
+
+        if (validPeriod > 4) {
+            feedingTicks = 5;
+            std::cout << "Valid To Shoot ---------------------------------" << std::endl;
+        }  
+
+        
+    }
+    else {
+        validPeriod = 0;        
     }
 
     IsBallInShooter = m_shooter->ContainsBall();
+
+    //std::cout << "Ball: " << IsBallInShooter << " : " << this->donefor << " Shooting!" << std::endl;
+
+    if (!IsBallInShooter) this->donefor++;
+    else                 this->donefor = 0;
 }
 
 void ShooterCommand::Initialize() {
@@ -40,4 +66,8 @@ void ShooterCommand::Initialize() {
 
 void ShooterCommand::End(bool interrupt) {
     this->m_shooter->StopAll();
+    this->m_shooter->acuateServo(0.5);
+
+    validPeriod = 0;
+    feedingTicks = 0;
 }

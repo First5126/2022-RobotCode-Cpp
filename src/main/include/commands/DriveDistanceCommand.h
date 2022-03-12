@@ -36,12 +36,16 @@ class DriveDistance
   double EncoderStartLeftValue = 0;
   double EncoderStartRightValue = 0;
 
-  double Ku = 0.001;
+  double Ku = 2;
   double time = 1;
 
-  //frc::PIDController m_left_pid  {Ku * 0.6, (1.2 * time) / 0.5, (3 * Ku * time) / 40.0};
-  //frc::PIDController m_right_pid {Ku * 0.6, (1.2 * time) / 0.5, (3 * Ku * time) / 40.0};
+  int ThereAccum = 0;
 
-  //frc::PIDController m_left_pid  {0.4, 0.004, 0.0015};
-  //frc::PIDController m_right_pid {0.4, 0.004, 0.0015};
+  //frc::PIDController m_left_pid  {Ku * 0.45, (0.54 * Ku) / time, 0};
+
+
+  frc::PIDController m_left_pid  {0.5, 1.5, 0.0};
+
+
+  frc::PIDController m_right_pid {0.0, 0.0, 0.0};
 };

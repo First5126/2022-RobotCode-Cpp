@@ -28,9 +28,11 @@ ShooterSubsystem::ShooterSubsystem()
    
     //this->ShooterLeft->SetInverted(true);
 
-    this->m_shooter_encoder = new rev::SparkMaxRelativeEncoder {this->ShooterLeft->GetEncoder()}; 
+    this->m_shooter_encoder = new rev::SparkMaxRelativeEncoder {this->ShooterRight->GetEncoder()}; 
 
     //this->m_hood_encoder = new rev::SparkMaxAlternateEncoder {this->Hood->GetAlternateEncoder(rev::CANEncoder::AlternateEncoderType::kQuadrature, 8196) };
+
+    this->m_pid.SetTolerance(50);
 
 }
 
@@ -45,15 +47,17 @@ void ShooterSubsystem::Periodic() {
 }
 
 void ShooterSubsystem::RunShooter(double speed) {
-    this->m_pid.SetSetpoint(speed);
+    this->m_pid.SetSetpoint(speed / 4096);
 
-    double RunningSpeed = this->m_pid.Calculate(this->GetShooterSpeed());
+    
+    double RunningSpeed = this->m_pid.Calculate(this->GetShooterSpeed() / 4096);
     if (speed <= 0) RunningSpeed = 0;
 
     if (RunningSpeed < 0) RunningSpeed = 0;
     if (RunningSpeed > 1) RunningSpeed = 1;
 
-    std::cout << "Running Speed: " << RunningSpeed << " --- " << this->GetShooterSpeed() << std::endl;
+    std::cout << "Running Speed: " << RunningSpeed << " Target: " << speed << 
+    " Current: " << this->GetShooterSpeed() << " Difference: " << this->GetShooterSpeed() - speed << std::endl;
 
     this->ShooterLeft->Set(-RunningSpeed);
     this->ShooterRight->Set(-RunningSpeed);
@@ -65,6 +69,7 @@ double ShooterSubsystem::GetShooterSpeed() {
 
 bool ShooterSubsystem::IsShooterAtSpeed(double speed) {
     //bool at_speed = 0;
+
 
     return ( fabs(this->GetShooterSpeed() - speed) <= 50 );
 
@@ -107,17 +112,17 @@ void ShooterSubsystem::SetHoodToPos(int pos) {
     if (this->HasShooterBeenReset()) {
         double diff = fabs(pos - this->GetHoodPos());
 
-        if (diff > 100) {
+        if (diff > 50) {
             if (pos > this->GetHoodPos()) {
-                this->SetHoodSpeed(-0.5);
+                this->SetHoodSpeed( (diff > 400) ? -1 : -0.5);
             }
             else {
-                this->SetHoodSpeed(0.5);
+                this->SetHoodSpeed((diff > 400) ? 1 : 0.5);
             }
         }
         else {
             this->SetHoodSpeed(0);
-            std::cout << "Hood set to pos : " << this->GetHoodPos() << std::endl;
+            //std::cout << "Hood set to pos : " << this->GetHoodPos() << std::endl;
         }
     }
     else {
@@ -133,7 +138,7 @@ void ShooterSubsystem::SetHoodToPos(int pos) {
 bool ShooterSubsystem::IsHoodAtPos(int pos) {
     double diff = fabs(pos - this->GetHoodPos());
 
-    return (diff < 100);
+    return (diff < 50);
 }
 
 void ShooterSubsystem::StopAll() {
@@ -153,5 +158,9 @@ bool ShooterSubsystem::ContainsBall() {
 
     double sensorFlipped = fabs(2047 - sensorValue);
 
-    return sensorFlipped < 1730;
+    return sensorFlipped < 1730 || !hopperball.Get();
+}
+
+void ShooterSubsystem::acuateServo(double angle) {
+    m_pushy.Set(angle);
 }

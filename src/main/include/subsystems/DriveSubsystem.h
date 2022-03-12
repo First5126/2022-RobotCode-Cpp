@@ -23,6 +23,7 @@
 #include "frc/motorcontrol/MotorControllerGroup.h"
 #include "frc/drive/DifferentialDrive.h"
 #include "frc/kinematics/DifferentialDriveOdometry.h"
+#include "frc/ADXRS450_Gyro.h"
 
 #include <units/acceleration.h>
 #include <units/angle.h>
@@ -34,6 +35,8 @@
 
 
 #include "frc/controller/PIDController.h"
+
+#include <frc/Solenoid.h>
 
 class DriveSubsystem : public frc2::SubsystemBase {
  public:
@@ -76,7 +79,7 @@ class DriveSubsystem : public frc2::SubsystemBase {
   double CalcualteDriveEncoder(double ft);
 
   // Get the degree that the robot is facing [-180, 180]
-  units::degree_t GetHeading() const;
+  double GetHeading();
 
   // Get the rate at which the robot is turning
   double GetTurnRate();
@@ -87,8 +90,13 @@ class DriveSubsystem : public frc2::SubsystemBase {
   double SetLeftSpeed(double speed);
   double SetRightSpeed(double speed);
 
+  void resetHeading();
+
 
   bool CheckMotors();
+
+  void ToggleShift();
+
 
   // Get the wheel speeds
   //frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();
@@ -125,6 +133,7 @@ class DriveSubsystem : public frc2::SubsystemBase {
   double EncoderStartLeftValue = 0;
   double EncoderStartRightValue = 0;
 
+  frc::ADXRS450_Gyro gyro;
   
   double Kp = 3.4933;
   double Ki = 0;
@@ -132,6 +141,10 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   frc::PIDController pid_left {Kp, Ki, Kd};
   frc::PIDController pid_right {Kp, Ki, Kd};
+
+  bool ShiftedState = false;
   
+  frc::Solenoid right_piston {30, frc::PneumaticsModuleType::REVPH, 2};
+  frc::Solenoid left_piston {30, frc::PneumaticsModuleType::REVPH, 3};
   
 };
