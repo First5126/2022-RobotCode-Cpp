@@ -161,6 +161,11 @@ void DriveSubsystem::ToggleShift() {
     this->right_piston.Set(this->ShiftedState);
 }
 
+bool DriveSubsystem::SetShift(bool shift) {
+    this->left_piston.Set(shift);
+    this->right_piston.Set(shift);
+}
+
 //frc::DifferentialDriveWheelSpeeds DriveSubsystem::GetWheelSpeeds() {
     //frc::DifferentialDriveWheelSpeeds speed;
     //speed.left  = LFMotor.GetActiveTrajectoryVelocity(1) ;

@@ -40,10 +40,11 @@ class ShooterCommand
   std::function<int()> m_hood;
 
   int donefor = 0;
-
   int validPeriod = 0;
-
   int feedingTicks = 0;
+
+  int ticks = 0;
+  bool state_change = false;
 
   bool IsBallInShooter = 0;
   bool IsCurrentlyShooting = 0;

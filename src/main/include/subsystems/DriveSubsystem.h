@@ -97,6 +97,7 @@ class DriveSubsystem : public frc2::SubsystemBase {
 
   void ToggleShift();
 
+  bool SetShift(bool shift);
 
   // Get the wheel speeds
   //frc::DifferentialDriveWheelSpeeds GetWheelSpeeds();

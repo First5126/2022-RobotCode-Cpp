@@ -25,6 +25,7 @@
 #include <frc2/command/SequentialCommandGroup.h>
 #include <frc2/command/button/JoystickButton.h>
 #include <frc/Compressor.h>
+#include "commands/AutoCommand.h"
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -49,9 +50,11 @@ class RobotContainer {
 
   // The robot's subsystems and commands are defined here...
   ExampleSubsystem m_subsystem;
-  ExampleCommand m_autonomousCommand;
+  AutoCommand m_autonomousCommand;
 
-  frc::XboxController m_driverController { 0 };
+  frc::XboxController m_driverController { 1 };
+  frc::XboxController m_drive_controller { 0 };
+
 
   DriveSubsystem m_drive;
   ShooterSubsystem m_shooter;

@@ -14,6 +14,7 @@
 
 #include "subsystems/IntakeSubsystem.h"
 #include <iostream>
+#include "frc/smartdashboard/SmartDashboard.h"
 
 IntakeSubsystem::IntakeSubsystem() {
     std::cout << "IntakeSubsystem init - Checking Motors..." << std::endl;
@@ -23,6 +24,11 @@ IntakeSubsystem::IntakeSubsystem() {
     std::cout << "Motors\tOK" << std::endl;
 
     this->m_arm.Set(frc::DoubleSolenoid::kForward);
+
+    frc::SmartDashboard::PutBoolean("Running Intake", false);
+    frc::SmartDashboard::PutBoolean("Intake", true);
+
+
 }
 
 void IntakeSubsystem::Periodic() {
@@ -32,11 +38,15 @@ void IntakeSubsystem::Periodic() {
 void IntakeSubsystem::DeployIntake() {
     this->IntakeState = true;
     this->m_arm.Set(frc::DoubleSolenoid::kReverse);
+
+    frc::SmartDashboard::PutBoolean("Intake", true);
 }
 
 void IntakeSubsystem::RetractIntake() {
     this->IntakeState = false;
     this->m_arm.Set(frc::DoubleSolenoid::kForward);
+
+    frc::SmartDashboard::PutBoolean("Intake", false);
 }
 
 void IntakeSubsystem::ToggleIntake() {
@@ -45,14 +55,21 @@ void IntakeSubsystem::ToggleIntake() {
 
 void IntakeSubsystem::RunIntake() {
     this->IntakeMotor->Set(1);
+
+    frc::SmartDashboard::PutBoolean("Running Intake", true);
 }
 
 void IntakeSubsystem::StopIntake() {
     this->IntakeMotor->Set(0);
+
+    frc::SmartDashboard::PutBoolean("Running Intake", false);
 }
 
 void IntakeSubsystem::StopAll() {
     this->IntakeMotor->Set(0);
+
+    frc::SmartDashboard::PutBoolean("Running Intake", false);
+
 }
 
 bool IntakeSubsystem::GetIntakeState() {

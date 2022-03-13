@@ -19,51 +19,17 @@ bool isfinished() {
   return false;
 }
 
-std::vector<std::string> split(std::string text, char delim) {
-    std::string line;
-    std::vector<std::string> vec;
-    std::stringstream ss(text);
-
-    while(std::getline(ss, line, delim)) {
-        vec.push_back(line);
-    }
-
-    return vec;
-
-}
-
-frc2::SequentialCommandGroup* RobotContainer::EasyAuto(std::string input) {
-  std::vector<std::string> lines = split(input, '\n');
-
-  frc2::SequentialCommandGroup* group = new frc2::SequentialCommandGroup{};
-
-  for (auto i : lines) {
-    std::vector<std::string> operations = split(i, ' ');
-
-    if (operations.size() != 2) std::cout << "[ERROR]: Too many, or to little operations in file! Commands should look like `[CMD] (ARGS)`!" << std::endl << "Command looked like: " << i << std::endl;
-
-    auto cmd = operations[0]; 
-    auto opperand = std::stof(operations[1]);
-
-    if (cmd == "Drive") group->AddCommands(DriveDistance(&m_drive, [this, opperand]() { return opperand; }));
-    //else if (cmd == "Shoot") group->AddCommands(ShooterCommand(&m_shooter, [this, opperand]() { return opperand; }));
-    else if (cmd == "Turn") ;
-    else std::cout << "[ERROR]: \'" << cmd << "\' IS NOT FOUND!" << std::endl;
-  }
-
-  return group;
-}
 
 RobotContainer::RobotContainer() 
-  : m_autonomousCommand(&m_drive)
+  : m_autonomousCommand(&m_drive, &m_intake, &m_shooter)
     {
   // Initialize all of your commands and subsystems here
 
 
   m_drive.SetDefaultCommand( DefaultDrive {
     &m_drive,
-    [this]() { return -m_driverController.GetLeftY(); },
-    [this]() { return m_driverController.GetRightX(); } 
+    [this]() { return -m_drive_controller.GetLeftY(); },
+    [this]() { return m_drive_controller.GetRightX(); } 
   });
 
 
@@ -81,7 +47,8 @@ void RobotContainer::ConfigureButtonBindings() {
   // the power that the shooter needs to run at
   // for us to get the ball into the goal!
   // 2850 5000
-  frc2::JoystickButton(&m_driverController, 1)
+  
+  /*frc2::JoystickButton(&m_driverController, 1)
   .WhenPressed ( 
     frc2::SequentialCommandGroup (
       frc2::ParallelCommandGroup {
@@ -93,10 +60,10 @@ void RobotContainer::ConfigureButtonBindings() {
         IntakeCommand(&m_intake, [this]() {return this->intake_in; })
       },
       frc2::InstantCommand([this]() { this->intake_in = false; }),
-      ShooterCommand(&m_shooter, []() {return 3000; }, []() {return 1000; })
+      ShooterCommand(&m_shooter, []() {return 2425; }, []() {return 850; })
     )
-    
   ); // Example Speed FIXME!
+  */
 
   // This will run the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 2)
@@ -113,17 +80,32 @@ void RobotContainer::ConfigureButtonBindings() {
   //frc2::JoystickButton(&m_driverController, 3)
   //.WhenPressed ( this->EasyAuto(auto_code) );
 
-  // 27in 2500 1000
-  // 12in 2500 1500
-  //  0in 2250 2000
-  // 36in 2500  900
-  // 48in 2500  850
-  // 
+  // 27in 2500 1000 BACK  SIDE
+  // 12in 2500 1500 BACK  SIDE
+  //  0in 2250 2000 BACK  SIDE
+  // 36in 2500  900 BACK  SIDE
+  // 48in 2500  850 BACK  SIDE
+  //  0in 2500 3000 FRONT SIDE
+  // 12in 2500 3200 FRONT SIDE
+  // 24in 2550 3400 FRONT SIDE
+  // 36in 2550 3600 FRONT SIDE
+  // 48in 2575 3800 FRONT SIDE
+  // 60in 2600 4000 FRONT SIDE
+  // FAR  3200 5400 FRONT SIDE // DANGER ANGLE
+  // 72in 2600 4200 FRONT SIDE
+  // 84in 2600 4400 FRONT SIDE
+  // 96in 2675 4600 FRONT SIDE
+  // 60in 2525  800 BACK  SIDE
+  // 72in 2475  750 BACK SIDE
+  // 84in 2550  700 BACK SIDE
+  // 96in 
 
-  frc2::JoystickButton(&m_driverController, 3)
+
+
+  frc2::JoystickButton(&m_driverController, 1) // A
   .WhenPressed(
     new frc2::SequentialCommandGroup(
-      ShooterCommand(&m_shooter, []() {return 2000;}, []() {return 2000;})
+      ShooterCommand(&m_shooter, []() {return 2475;}, []() {return 750;})
     )
   );
 
@@ -151,8 +133,11 @@ void RobotContainer::ConfigureButtonBindings() {
   .WhenPressed ([this]() { m_intake.RunIntake(); })
   .WhenReleased([this]() { m_intake.StopAll(); });
 
-  frc2::JoystickButton(&m_driverController, 10)
-  .WhenPressed ([this]() { m_drive.ToggleShift(); });
+  frc2::JoystickButton(&m_drive_controller, 5)
+  .WhenPressed ([this]() { m_drive.SetShift(1); });
+
+  frc2::JoystickButton(&m_drive_controller, 6)
+  .WhenPressed ([this]() { m_drive.SetShift(0); });
 
 }
 

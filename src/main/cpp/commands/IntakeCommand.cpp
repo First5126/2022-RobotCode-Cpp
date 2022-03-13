@@ -11,7 +11,7 @@ IntakeCommand::IntakeCommand(IntakeSubsystem* subsystem, std::function<bool()> o
 
 bool IntakeCommand::IsFinished() {
     // limit switch
-    return this->m_intake->GetIntakeState();
+    return m_override();
 }
 
 void IntakeCommand::Execute() {    
