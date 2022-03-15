@@ -15,14 +15,16 @@
 #include <frc2/command/ParallelCommandGroup.h>
 
 
+
 bool isfinished() {
   return false;
 }
 
-
 RobotContainer::RobotContainer() 
   : m_autonomousCommand(&m_drive, &m_intake, &m_shooter)
     {
+
+  frc::CameraServer::StartAutomaticCapture();
   // Initialize all of your commands and subsystems here
 
 
@@ -71,9 +73,13 @@ void RobotContainer::ConfigureButtonBindings() {
   .WhenReleased([this]() {m_intake.RetractIntake(); m_intake.StopAll();   });
 
   // Toggle the intake when button is pressed
+  frc2::JoystickButton(&m_driverController, 3)
+  .WhenPressed ([this]() { m_climer.Set(0.5); })
+  .WhenReleased([this]() { m_climer.Set(0); });
+
   frc2::JoystickButton(&m_driverController, 4)
-  .WhenPressed ([this]() { m_shooter.acuateServo(-1); })
-  .WhenReleased([this]() { m_shooter.acuateServo(0.5); });
+  .WhenPressed ([this]() { m_climer.Set(-0.5); })
+  .WhenReleased([this]() { m_climer.Set(0); });
 
 
 
@@ -100,7 +106,10 @@ void RobotContainer::ConfigureButtonBindings() {
   // 84in 2550  700 BACK SIDE
   // 96in 
 
-
+  frc2::JoystickButton(&m_drive_controller, 1) 
+  .WhenPressed(
+    [this]() {m_shooter.ToggleAutoSpinup(); }
+  );
 
   frc2::JoystickButton(&m_driverController, 1) // A
   .WhenPressed(

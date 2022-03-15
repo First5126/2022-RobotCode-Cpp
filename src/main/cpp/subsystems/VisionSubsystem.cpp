@@ -3,16 +3,15 @@
 #include <iostream>
 
 VisionSubsystem::VisionSubsystem() {
-    m_table = nt::NetworkTableInstance::GetDefault();
-
+    
     std::cout << "VisionSubsystem\tOK" << std::endl;    
 }
   
 void VisionSubsystem::Periodic() {
     this->latency = GetValueFromPi("latencyMillis");
-    this->Yaw = GetValueFromPi("targetYaw");
-    this->Pitch = GetValueFromPi("targetPitch");
-    this->CurrentMode = GetValueFromPi("pipelineIndex");
+    this->Yaw = GetValueFromPi("tx");
+    this->Pitch = GetValueFromPi("ty");
+    this->CurrentMode = GetValueFromPi("pipeline");
 
     this->ObjectInFrame = Yaw != 0 || Pitch != 0;  
 }
@@ -22,8 +21,7 @@ bool VisionSubsystem::IsConnected() {
 }
 
 void VisionSubsystem::SetMode(Mode mode) {
-    std::string NetworkTablesRequest = "/" + PiName + "/" + CameraName + "/pipelineIndex";
-    m_table.GetEntry(NetworkTablesRequest).SetDouble(mode);
+    
 
     CurrentMode = mode;
 }
@@ -43,13 +41,13 @@ double VisionSubsystem::GetBallPitch() {
 }
 
 double VisionSubsystem::GetBallDistance() {
-    // TODO: Calculate the distance of the ball based on the pitch
+  
 }
 
 double VisionSubsystem::GetValueFromPi(std::string value) {
-    std::string NetworkTablesRequest = "/" + PiName + "/" + CameraName + "/" + value;
+    std::string NetworkTablesRequest = "/" + PiName + CameraName + "/" + value;
 
-    return m_table.GetEntry(NetworkTablesRequest).GetDouble(0);
+    return table->GetNumber(value, 0.0);
 }
 
 bool VisionSubsystem::IsDetectingTape() {
@@ -65,5 +63,14 @@ double VisionSubsystem::GetTapePitch() {
 }
 
 double VisionSubsystem::GetTapeDistance() {
-    // TODO: Calculate the distance of the tap from the pitch and yaw
+    double LimeLightHight = 22.75;
+    double TargetHight = 103;
+    double LimelightAngle = 30; // degrees
+
+    double angleToGoalDegrees = LimelightAngle + Pitch; 
+    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+    double Distance = (TargetHight - LimeLightHight) / std::tan(angleToGoalRadians);
+
+    return Distance - (15.5 + 22);
 }

@@ -14,6 +14,7 @@
 */ 
 
 #include "subsystems/ShooterSubsystem.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 
 #include <iostream>
 
@@ -43,7 +44,69 @@ ShooterSubsystem::~ShooterSubsystem() {
 }
 
 void ShooterSubsystem::Periodic() {
+    frc::SmartDashboard::PutBoolean("Ball in Shooter", this->ContainsBall());
+    frc::SmartDashboard::PutNumber("Robot Distance", m_vision.GetTapeDistance());
 
+    if (m_vision.IsDetectingTape()) {
+        double CurrentDistance = m_vision.GetTapeDistance();
+
+        double DistanceDelta = 1000;
+        int closestPoint = -1;
+
+        for (int i = 0; i < TABLESIZE; i ++) {
+            int distance = this->distanceTable[i];
+            double delta = fabs(distance - CurrentDistance);
+
+            if (delta <= DistanceDelta) {
+                DistanceDelta = delta;
+                closestPoint = i; 
+            }
+        }
+
+        HoodSetpoint = this->HoodTable[closestPoint];
+        SpeedSetPoint = this->SpeedTable[closestPoint];
+
+        if (closestPoint + 1 < TABLESIZE ) {
+            int DiffSpeedSetpoint = this->SpeedTable[closestPoint + 1];
+            int DiffHoodSetpoint = this->HoodTable[closestPoint + 1];
+        
+            double FirstSetpointPower = fabs(CurrentDistance - this->distanceTable[closestPoint + 1]);
+            double SecondSetpointPower = DistanceDelta;
+
+            double CombinedSetpointSpeed = 
+            ((SpeedSetPoint * FirstSetpointPower) + (DiffSpeedSetpoint * SecondSetpointPower)) / (FirstSetpointPower + SecondSetpointPower);
+            
+            double CombinedSetpointHood  = 
+            ((HoodSetpoint * FirstSetpointPower) + (DiffHoodSetpoint * SecondSetpointPower)) / (FirstSetpointPower + SecondSetpointPower);
+            
+
+            HoodSetpoint = CombinedSetpointHood;
+            SpeedSetPoint = CombinedSetpointSpeed;
+            //std::cout << "Combined: " << CombinedSetpointSpeed / ( (FirstSetpointPower + SecondSetpointPower)) << std::endl;
+        }
+    }
+    
+
+    //std::cout << "closest point: " << closestPoint + 1 << " : " << DistanceDelta << " --> " << SpeedSetPoint << " : " << HoodSetpoint << std::endl;
+    frc::SmartDashboard::PutBoolean("Target Detected", m_vision.IsDetectingTape());
+    frc::SmartDashboard::PutBoolean("Shooter Ready", this->IsShooterAtSpeed(SpeedSetPoint));
+    frc::SmartDashboard::PutBoolean("Hood Ready", this->IsHoodAtPos(HoodSetpoint));
+    frc::SmartDashboard::PutNumber("Shooter Speed", this->GetShooterSpeed());
+    frc::SmartDashboard::PutNumber("Speed Delta", this->GetShooterSpeed() - SpeedSetPoint);
+
+
+    if (AutoSpinup){
+        this->SetHoodToPos(HoodSetpoint);
+        this->RunShooter(SpeedSetPoint);
+    }
+}
+
+bool ShooterSubsystem::GetAutoSpinupState() {
+    return this->AutoSpinup;
+}
+
+void ShooterSubsystem::ToggleAutoSpinup() {
+    this->AutoSpinup = !this->AutoSpinup;
 }
 
 void ShooterSubsystem::RunShooter(double speed) {
@@ -54,7 +117,7 @@ void ShooterSubsystem::RunShooter(double speed) {
     if (speed <= 0) RunningSpeed = 0;
 
     if (RunningSpeed < 0) RunningSpeed = 0;
-    if (RunningSpeed > 1) RunningSpeed = 1;
+    if (RunningSpeed > 0.8) RunningSpeed = 0.8;
 
     std::cout << "Running Speed: " << RunningSpeed << " Target: " << speed << 
     " Current: " << this->GetShooterSpeed() << " Difference: " << this->GetShooterSpeed() - speed << std::endl;
@@ -71,7 +134,7 @@ bool ShooterSubsystem::IsShooterAtSpeed(double speed) {
     //bool at_speed = 0;
 
 
-    return ( fabs(this->GetShooterSpeed() - speed) <= 50 );
+    return ( fabs(this->GetShooterSpeed() - speed) <= 100 );
 
     //return this->GetShooterSpeed() >= speed - (speed * 0.01);
 }
@@ -114,10 +177,10 @@ void ShooterSubsystem::SetHoodToPos(int pos) {
 
         if (diff > 50) {
             if (pos > this->GetHoodPos()) {
-                this->SetHoodSpeed( (diff > 400) ? -1 : -0.5);
+                this->SetHoodSpeed( (diff > 400) ? -1 : -0.3);
             }
             else {
-                this->SetHoodSpeed((diff > 400) ? 1 : 0.5);
+                this->SetHoodSpeed((diff > 400) ? 1 : 0.3);
             }
         }
         else {
@@ -136,9 +199,14 @@ void ShooterSubsystem::SetHoodToPos(int pos) {
 }
 
 bool ShooterSubsystem::IsHoodAtPos(int pos) {
-    double diff = fabs(pos - this->GetHoodPos());
+    if (pos == 0) {
+        return this->IsLimitReached();
+    }
+    else {
+        double diff = fabs(pos - this->GetHoodPos());
 
-    return (diff < 50);
+        return (diff < 50);
+    }
 }
 
 void ShooterSubsystem::StopAll() {
@@ -163,4 +231,12 @@ bool ShooterSubsystem::ContainsBall() {
 
 void ShooterSubsystem::acuateServo(double angle) {
     m_pushy.Set(angle);
+}
+
+bool ShooterSubsystem::ContainsShootingBall() {
+    uint32_t sensorValue = m_sensor.GetProximity();
+
+    double sensorFlipped = fabs(2047 - sensorValue);
+
+    return sensorFlipped < 1730;
 }

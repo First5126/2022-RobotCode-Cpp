@@ -26,6 +26,10 @@
 #include <frc2/command/button/JoystickButton.h>
 #include <frc/Compressor.h>
 #include "commands/AutoCommand.h"
+#include "subsystems/ClimerSubsystem.h"
+#include "frc/PowerDistribution.h"
+
+#include <cameraserver/CameraServer.h>
 
 /**
  * This class is where the bulk of the robot should be declared.  Since
@@ -59,11 +63,14 @@ class RobotContainer {
   DriveSubsystem m_drive;
   ShooterSubsystem m_shooter;
   IntakeSubsystem m_intake;
+  ClimerSubsystem m_climer;
 
 
   frc2::SequentialCommandGroup* EasyAuto(std::string input);
 
   void ConfigureButtonBindings();
+
+  
 
   
 };

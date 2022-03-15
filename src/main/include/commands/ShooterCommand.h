@@ -46,6 +46,8 @@ class ShooterCommand
   int ticks = 0;
   bool state_change = false;
 
+  int total_ticks = 0;
+
   bool IsBallInShooter = 0;
   bool IsCurrentlyShooting = 0;
 };

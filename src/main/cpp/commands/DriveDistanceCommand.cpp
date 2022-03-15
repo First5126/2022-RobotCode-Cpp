@@ -57,7 +57,7 @@ void DriveDistance::Execute() {
     units::voltage::volt_t leftvolt (driveLeft);
     units::voltage::volt_t rightvolt (driveRight);
 
-    m_drive->TankDriveVolts(leftvolt, rightvolt);
+    m_drive->TankDriveVolts(leftvolt, leftvolt);
 
     frc::SmartDashboard::PutNumber("Distance From Goal", RealEncoderLeft - this->m_drive->GetLeftEncoderPos());
     

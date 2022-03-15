@@ -79,6 +79,11 @@ void DriveSubsystem::Periodic()  {
     // with electrical problems in the future because we will tell
     // which motors got unplugged!
     //CheckMotors();
+
+    //frc::SmartDashboard::PutNumber("Watts", PD.GetTotalPower());
+
+
+    frc::SmartDashboard::PutNumber("Gyro", this->GetHeading());
 }
 
 void DriveSubsystem::TankDrive(double left, double right) {
@@ -159,11 +164,15 @@ void DriveSubsystem::ToggleShift() {
 
     this->left_piston.Set(this->ShiftedState);
     this->right_piston.Set(this->ShiftedState);
+
+    frc::SmartDashboard::PutBoolean("Gear", this->ShiftedState);
 }
 
 bool DriveSubsystem::SetShift(bool shift) {
     this->left_piston.Set(shift);
     this->right_piston.Set(shift);
+
+    frc::SmartDashboard::PutBoolean("Gear", shift);
 }
 
 //frc::DifferentialDriveWheelSpeeds DriveSubsystem::GetWheelSpeeds() {

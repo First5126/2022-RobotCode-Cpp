@@ -6,6 +6,9 @@
 #include "networktables/NetworkTable.h"
 #include "networktables/NetworkTableEntry.h"
 #include "networktables/NetworkTableInstance.h"
+#include "networktables/NetworkTableValue.h"
+#include "networktables/NetworkTableType.h"
+#include "networktables/NetworkTableInstance.h"
 
 class VisionSubsystem : public frc2::SubsystemBase {
  public:
@@ -41,7 +44,7 @@ class VisionSubsystem : public frc2::SubsystemBase {
 
   double GetValueFromPi(std::string value);
 
-  nt::NetworkTableInstance m_table;
+  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
 
   bool ObjectInFrame = false;
   double latency = 0;
@@ -51,6 +54,6 @@ class VisionSubsystem : public frc2::SubsystemBase {
   double Yaw = 0;
   double Pitch = 0;  
 
-  const std::string PiName = "photonvision";
-  const std::string CameraName = "Microsoft_LifeCam_HD-3000";
+  const std::string PiName = "limelight";
+  const std::string CameraName = "";
 };

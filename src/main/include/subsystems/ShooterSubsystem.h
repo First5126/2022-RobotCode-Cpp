@@ -27,6 +27,8 @@
 #include <frc/Encoder.h>
 #include <frc/Servo.h>
 
+#include "subsystems/VisionSubsystem.h"
+
 
 
 class ShooterSubsystem : public frc2::SubsystemBase {
@@ -76,7 +78,12 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   int GetHoodPos();
 
   void acuateServo(double angle);
+
+  bool ContainsShootingBall();
   
+  void ToggleAutoSpinup();
+
+  bool GetAutoSpinupState();
 
  private:
   rev::CANSparkMax *ShooterLeft;
@@ -102,7 +109,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   frc::Encoder hood_encoder {5, 6};
 
-  
+  VisionSubsystem m_vision;
 
 
   rev::ColorSensorV3 m_sensor {frc::I2C::Port::kOnboard} ;
@@ -113,4 +120,66 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   bool ShooterReset = false;
 
   frc::Servo m_pushy {0};
+
+  const static int TABLESIZE = 8;
+
+  int HoodSetpoint = 0;
+  int SpeedSetPoint = 0;
+
+  int distanceTable[TABLESIZE] = {
+    0,
+    12,
+    27,
+    36,
+    48,
+    60,
+    72,
+    84
+  };
+
+  int SpeedTable[TABLESIZE] = {
+    2250,
+    2500,
+    2500,
+    2500,
+    2500,
+    2525,
+    2475,
+    2550
+  };
+
+  int HoodTable[TABLESIZE] = {
+    2000,
+    1500,
+    1000,
+    900,
+    850,
+    800,
+    750,
+    700
+  };
+
+  bool AutoSpinup = false;
+
+  //  0in 2250 2000 BACK  SIDE
+  // 12in 2500 1500 BACK  SIDE
+  // 27in 2500 1000 BACK  SIDE
+  // 36in 2500  900 BACK  SIDE
+  // 48in 2500  850 BACK  SIDE
+  // 60in 2525  800 BACK  SIDE
+  // 72in 2475  750 BACK  SIDE
+  // 84in 2550  700 BACK  SIDE
+
+  //  0in 2500 3000 FRONT SIDE
+  // 12in 2500 3200 FRONT SIDE
+  // 24in 2550 3400 FRONT SIDE
+  // 36in 2550 3600 FRONT SIDE
+  // 48in 2575 3800 FRONT SIDE
+  // 60in 2600 4000 FRONT SIDE
+  // FAR  3200 5400 FRONT SIDE // DANGER ANGLE
+  // 72in 2600 4200 FRONT SIDE
+  // 84in 2600 4400 FRONT SIDE
+  // 96in 2675 4600 FRONT SIDE
+
+
 };

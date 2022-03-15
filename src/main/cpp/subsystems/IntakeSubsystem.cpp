@@ -26,7 +26,7 @@ IntakeSubsystem::IntakeSubsystem() {
     this->m_arm.Set(frc::DoubleSolenoid::kForward);
 
     frc::SmartDashboard::PutBoolean("Running Intake", false);
-    frc::SmartDashboard::PutBoolean("Intake", true);
+    frc::SmartDashboard::PutBoolean("Intake", false);
 
 
 }

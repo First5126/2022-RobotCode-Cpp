@@ -33,6 +33,8 @@
 #include <units/voltage.h>
 #include <wpi/numbers>
 
+#include "frc/PowerDistribution.h"
+
 
 #include "frc/controller/PIDController.h"
 
@@ -147,5 +149,7 @@ class DriveSubsystem : public frc2::SubsystemBase {
   
   frc::Solenoid right_piston {30, frc::PneumaticsModuleType::REVPH, 2};
   frc::Solenoid left_piston {30, frc::PneumaticsModuleType::REVPH, 3};
+
+  //frc::PowerDistribution PD{0, frc::PowerDistribution::ModuleType::kCTRE};
   
 };
