@@ -11,7 +11,9 @@
 #include "commands/HoodCommand.h"
 #include "commands/TurnDegreesCommand.h"
 #include "commands/IntakeCommand.h"
+#include "commands/TargetAlign.h"
 
+#include "frc/smartdashboard/SmartDashboard.h"
 #include <frc2/command/ParallelCommandGroup.h>
 
 
@@ -74,13 +76,17 @@ void RobotContainer::ConfigureButtonBindings() {
 
   // Toggle the intake when button is pressed
   frc2::JoystickButton(&m_driverController, 3)
-  .WhenPressed ([this]() { m_climer.Set(0.5); })
+  .WhenPressed ([this]() { m_climer.Set(0.8); })
   .WhenReleased([this]() { m_climer.Set(0); });
 
   frc2::JoystickButton(&m_driverController, 4)
-  .WhenPressed ([this]() { m_climer.Set(-0.5); })
+  .WhenPressed ([this]() { m_climer.Set(-1); })
   .WhenReleased([this]() { m_climer.Set(0); });
 
+  frc2::JoystickButton(&m_drive_controller, 2)
+  .WhenPressed(
+    new TargetAlign(&m_shooter, &m_drive)
+  );
 
 
   //frc2::JoystickButton(&m_driverController, 3)
@@ -106,7 +112,9 @@ void RobotContainer::ConfigureButtonBindings() {
   // 84in 2550  700 BACK SIDE
   // 96in 
 
-  frc2::JoystickButton(&m_drive_controller, 1) 
+
+
+  frc2::JoystickButton(&m_drive_controller, 4) 
   .WhenPressed(
     [this]() {m_shooter.ToggleAutoSpinup(); }
   );

@@ -12,7 +12,7 @@ ShooterCommand::ShooterCommand(ShooterSubsystem* subsystem, std::function<double
 }
 
 bool ShooterCommand::IsFinished() {
-    return this->donefor > 50;
+    return this->donefor > 30;
 }
 
 void ShooterCommand::Execute() {    
@@ -103,9 +103,13 @@ void ShooterCommand::End(bool interrupt) {
     
     this->m_shooter->acuateServo(0.5);
 
-    frc::SmartDashboard::PutBoolean("Shooter Ready", false);
+    
+
+    //frc::SmartDashboard::PutBoolean("Shooter Ready", false);
     frc::SmartDashboard::PutBoolean("Shooting", false);
     frc::SmartDashboard::PutBoolean("Servo", false);
+
+    std::cout << "Command ended!" << std::endl;
     
 
     validPeriod = 0;

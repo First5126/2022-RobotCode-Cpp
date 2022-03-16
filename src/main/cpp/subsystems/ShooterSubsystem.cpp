@@ -93,12 +93,13 @@ void ShooterSubsystem::Periodic() {
     frc::SmartDashboard::PutBoolean("Hood Ready", this->IsHoodAtPos(HoodSetpoint));
     frc::SmartDashboard::PutNumber("Shooter Speed", this->GetShooterSpeed());
     frc::SmartDashboard::PutNumber("Speed Delta", this->GetShooterSpeed() - SpeedSetPoint);
-
+    frc::SmartDashboard::PutBoolean("AutoSpinup", this->GetAutoSpinupState());
 
     if (AutoSpinup){
         this->SetHoodToPos(HoodSetpoint);
         this->RunShooter(SpeedSetPoint);
     }
+    
 }
 
 bool ShooterSubsystem::GetAutoSpinupState() {
@@ -107,6 +108,14 @@ bool ShooterSubsystem::GetAutoSpinupState() {
 
 void ShooterSubsystem::ToggleAutoSpinup() {
     this->AutoSpinup = !this->AutoSpinup;
+
+    if (!this->AutoSpinup) {
+        this->StopAll();
+    }
+}
+
+double ShooterSubsystem::GetRobotAngleOffset() {
+    return m_vision.GetTapeYaw();
 }
 
 void ShooterSubsystem::RunShooter(double speed) {
@@ -119,8 +128,8 @@ void ShooterSubsystem::RunShooter(double speed) {
     if (RunningSpeed < 0) RunningSpeed = 0;
     if (RunningSpeed > 0.8) RunningSpeed = 0.8;
 
-    std::cout << "Running Speed: " << RunningSpeed << " Target: " << speed << 
-    " Current: " << this->GetShooterSpeed() << " Difference: " << this->GetShooterSpeed() - speed << std::endl;
+    //std::cout << "Running Speed: " << RunningSpeed << " Target: " << speed << 
+    //" Current: " << this->GetShooterSpeed() << " Difference: " << this->GetShooterSpeed() - speed << std::endl;
 
     this->ShooterLeft->Set(-RunningSpeed);
     this->ShooterRight->Set(-RunningSpeed);
