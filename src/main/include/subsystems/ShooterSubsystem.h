@@ -87,6 +87,9 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   double GetRobotAngleOffset();
 
+  int GetAutoHoodSetpoint();
+  int GetAutoSpeedSetpoint();
+
  private:
   rev::CANSparkMax *ShooterLeft;
   rev::CANSparkMax *ShooterRight;

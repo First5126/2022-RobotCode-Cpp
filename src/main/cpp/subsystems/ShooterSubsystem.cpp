@@ -101,6 +101,12 @@ void ShooterSubsystem::Periodic() {
     }
     
 }
+int ShooterSubsystem::GetAutoHoodSetpoint() {
+    return this->HoodSetpoint;
+}
+int ShooterSubsystem::GetAutoSpeedSetpoint() {
+    return this->SpeedSetPoint;
+}
 
 bool ShooterSubsystem::GetAutoSpinupState() {
     return this->AutoSpinup;

@@ -45,7 +45,5 @@ class DriveDistance
 
 
   frc::PIDController m_left_pid  {0.5, 1.5, 0.0};
-
-
   frc::PIDController m_right_pid {0.5, 1.5, 0.0};
 };

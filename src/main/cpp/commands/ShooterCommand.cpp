@@ -57,7 +57,9 @@ void ShooterCommand::Execute() {
 
         // Stop and reset all the things
         this->m_shooter->StopFeedBall();
-        this->m_shooter->acuateServo(0.5);
+        
+        if (!m_shooter->ContainsShootingBall())
+            this->m_shooter->acuateServo(0.5);
 
         this->state_change = false;
         feedingTicks = 0;
@@ -94,6 +96,12 @@ void ShooterCommand::Execute() {
 void ShooterCommand::Initialize() {
     IsBallInShooter = m_shooter->ContainsBall();
     total_ticks = 0;
+
+    if (m_shooter->ContainsShootingBall()) {
+        m_shooter->acuateServo(-1);
+        std::cout << "Setting Servo" << std::endl;
+    }
+    
 }
 
 void ShooterCommand::End(bool interrupt) {
@@ -102,8 +110,6 @@ void ShooterCommand::End(bool interrupt) {
         this->m_shooter->StopAll();
     
     this->m_shooter->acuateServo(0.5);
-
-    
 
     //frc::SmartDashboard::PutBoolean("Shooter Ready", false);
     frc::SmartDashboard::PutBoolean("Shooting", false);

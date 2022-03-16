@@ -15,7 +15,7 @@
 
 #include "frc/smartdashboard/SmartDashboard.h"
 #include <frc2/command/ParallelCommandGroup.h>
-
+#include "commands/ClimerCommand.h"
 
 
 bool isfinished() {
@@ -35,6 +35,12 @@ RobotContainer::RobotContainer()
     [this]() { return -m_drive_controller.GetLeftY(); },
     [this]() { return m_drive_controller.GetRightX(); } 
   });
+
+  m_climer.SetDefaultCommand( ClimerCommand {
+    &m_climer,
+    [this]() { return m_driverController.GetRawAxis(3); },
+    [this]() { return m_driverController.GetRawAxis(2); }
+  } );
 
 
   m_compressor.EnableDigital();
@@ -70,23 +76,7 @@ void RobotContainer::ConfigureButtonBindings() {
   */
 
   // This will run the intake when button is pressed
-  frc2::JoystickButton(&m_driverController, 2)
-  .WhenPressed ([this]() {m_intake.DeployIntake(); m_intake.RunIntake();    })
-  .WhenReleased([this]() {m_intake.RetractIntake(); m_intake.StopAll();   });
-
-  // Toggle the intake when button is pressed
-  frc2::JoystickButton(&m_driverController, 3)
-  .WhenPressed ([this]() { m_climer.Set(0.8); })
-  .WhenReleased([this]() { m_climer.Set(0); });
-
-  frc2::JoystickButton(&m_driverController, 4)
-  .WhenPressed ([this]() { m_climer.Set(-1); })
-  .WhenReleased([this]() { m_climer.Set(0); });
-
-  frc2::JoystickButton(&m_drive_controller, 2)
-  .WhenPressed(
-    new TargetAlign(&m_shooter, &m_drive)
-  );
+  
 
 
   //frc2::JoystickButton(&m_driverController, 3)
@@ -112,9 +102,33 @@ void RobotContainer::ConfigureButtonBindings() {
   // 84in 2550  700 BACK SIDE
   // 96in 
 
+  frc2::JoystickButton(&m_driverController, 2) // B
+  .WhenPressed ([this]() {m_intake.DeployIntake(); m_intake.RunIntake();    })
+  .WhenReleased([this]() {m_intake.RetractIntake(); m_intake.StopAll();   });
 
+  // Toggle the intake when button is pressed
+  /*frc2::JoystickButton(&m_driverController, 3) // X
+  .WhenPressed ([this]() { m_climer.Set(0.8); })
+  .WhenReleased([this]() { m_climer.Set(0); });
 
-  frc2::JoystickButton(&m_drive_controller, 4) 
+  frc2::JoystickButton(&m_driverController, 4) // Y
+  .WhenPressed ([this]() { m_climer.Set(-1); })
+  .WhenReleased([this]() { m_climer.Set(0); });*/
+
+  frc2::JoystickButton(&m_driverController, 3) // X
+  .WhenPressed( new ShooterCommand(&m_shooter, []() {return 2250; }, []() {return 2000;}));
+
+  frc2::JoystickButton(&m_driverController, 4) // Y
+  .WhenPressed( new ShooterCommand(&m_shooter,
+  [this]() {return m_shooter.GetAutoSpeedSetpoint(); },
+  [this]() {return m_shooter.GetAutoHoodSetpoint();}));
+
+  frc2::JoystickButton(&m_drive_controller, 2) // B - drive controller
+  .WhenPressed(
+    new TargetAlign(&m_shooter, &m_drive)
+  );
+
+  frc2::JoystickButton(&m_drive_controller, 4)  // Y - drive controller
   .WhenPressed(
     [this]() {m_shooter.ToggleAutoSpinup(); }
   );
@@ -126,34 +140,34 @@ void RobotContainer::ConfigureButtonBindings() {
     )
   );
 
-  frc2::JoystickButton(&m_driverController, 5)
+  frc2::JoystickButton(&m_driverController, 5) // left bumper
   .WhenPressed(
     [this]() { m_compressor.Disable(); }
   );
 
-  frc2::JoystickButton(&m_driverController, 6)
+  frc2::JoystickButton(&m_driverController, 6) // right bumper
   .WhenPressed(
     [this]() { m_compressor.EnableDigital(); }
   );
 
-  frc2::JoystickButton(&m_driverController, 7)
+  frc2::JoystickButton(&m_driverController, 7) // back
   .WhenPressed(
     new HoodCommand(&m_shooter, []() {return 0; })
   );
 
-  frc2::JoystickButton(&m_driverController, 8)
+  frc2::JoystickButton(&m_driverController, 8) // start
   .WhenPressed(
     new HoodCommand(&m_shooter, []() {return 5010; })
   );
   
-  frc2::JoystickButton(&m_driverController, 9)
+  frc2::JoystickButton(&m_driverController, 9) // left joystick 
   .WhenPressed ([this]() { m_intake.RunIntake(); })
   .WhenReleased([this]() { m_intake.StopAll(); });
 
-  frc2::JoystickButton(&m_drive_controller, 5)
+  frc2::JoystickButton(&m_drive_controller, 5) // left bumper - drive controller
   .WhenPressed ([this]() { m_drive.SetShift(1); });
 
-  frc2::JoystickButton(&m_drive_controller, 6)
+  frc2::JoystickButton(&m_drive_controller, 6) // right bumper - drive controller 
   .WhenPressed ([this]() { m_drive.SetShift(0); });
 
 }
