@@ -25,6 +25,7 @@ ShooterSubsystem::ShooterSubsystem()
 
     this->Hood = new rev::CANSparkMax(50, rev::CANSparkMaxLowLevel::MotorType::kBrushed);
 
+
     //this->Hood->SetInverted(true);
    
     //this->ShooterLeft->SetInverted(true);
@@ -88,12 +89,12 @@ void ShooterSubsystem::Periodic() {
     
 
     //std::cout << "closest point: " << closestPoint + 1 << " : " << DistanceDelta << " --> " << SpeedSetPoint << " : " << HoodSetpoint << std::endl;
-    frc::SmartDashboard::PutBoolean("Target Detected", m_vision.IsDetectingTape());
-    frc::SmartDashboard::PutBoolean("Shooter Ready", this->IsShooterAtSpeed(SpeedSetPoint));
-    frc::SmartDashboard::PutBoolean("Hood Ready", this->IsHoodAtPos(HoodSetpoint));
-    frc::SmartDashboard::PutNumber("Shooter Speed", this->GetShooterSpeed());
-    frc::SmartDashboard::PutNumber("Speed Delta", this->GetShooterSpeed() - SpeedSetPoint);
-    frc::SmartDashboard::PutBoolean("AutoSpinup", this->GetAutoSpinupState());
+    frc::SmartDashboard::PutBoolean("Target Detected"   , m_vision.IsDetectingTape());
+    frc::SmartDashboard::PutBoolean("Shooter Ready"     , this->IsShooterAtSpeed(SpeedSetPoint));
+    frc::SmartDashboard::PutBoolean("Hood Ready"        , this->IsHoodAtPos(HoodSetpoint));
+    frc::SmartDashboard::PutNumber ("Shooter Speed"     , this->GetShooterSpeed());
+    frc::SmartDashboard::PutNumber ("Speed Delta"       , this->GetShooterSpeed() - SpeedSetPoint);
+    frc::SmartDashboard::PutBoolean("AutoSpinup"        , this->GetAutoSpinupState());
 
     if (AutoSpinup){
         this->SetHoodToPos(HoodSetpoint);

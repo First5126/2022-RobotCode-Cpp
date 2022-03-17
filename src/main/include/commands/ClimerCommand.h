@@ -22,7 +22,9 @@ class ClimerCommand
    *
    * @param subsystem The subsystem used by this command.
    */
-  explicit ClimerCommand(ClimerSubsystem* subsystem, std::function<double()> up, std::function<double()> down);
+  explicit ClimerCommand(ClimerSubsystem* subsystem,
+   std::function<double()> up, std::function<double()> down,
+   std::function<double()> up_high, std::function<double()> down_high);
 
   //void Initialize() override;
   void Execute() override;
@@ -33,4 +35,8 @@ class ClimerCommand
 
   std::function<double()> m_up;
   std::function<double()> m_down;
+
+    std::function<double()> m_up_high;
+  std::function<double()> m_down_high;
+
 };

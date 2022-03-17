@@ -56,7 +56,7 @@ class RobotContainer {
   ExampleSubsystem m_subsystem;
   AutoCommand m_autonomousCommand;
 
-  frc::XboxController m_driverController { 1 };
+  frc::XboxController m_buttons_controller { 1 };
   frc::XboxController m_drive_controller { 0 };
 
 

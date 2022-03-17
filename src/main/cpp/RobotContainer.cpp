@@ -38,12 +38,17 @@ RobotContainer::RobotContainer()
 
   m_climer.SetDefaultCommand( ClimerCommand {
     &m_climer,
-    [this]() { return m_driverController.GetRawAxis(3); },
-    [this]() { return m_driverController.GetRawAxis(2); }
-  } );
+    [this]() { return m_buttons_controller.GetRawAxis(3); },
+    [this]() { return m_buttons_controller.GetRawAxis(2); },
+    [this]() { return m_drive_controller.GetRawAxis(3); },
+    [this]() { return m_drive_controller.GetRawAxis(2); }
+  });
 
 
-  m_compressor.EnableDigital();
+  // ------------------------------ COMPRESSOR ----------------------- // 
+  //m_compressor.EnableDigital();
+  m_compressor.EnableHybrid(units::pounds_per_square_inch_t(90), units::pounds_per_square_inch_t(120));
+  //m_compressor.EnableAnalog(units::pounds_per_square_inch_t(90), units::pounds_per_square_inch_t(120));
   
   // Configure the button bindings
   ConfigureButtonBindings();
@@ -102,7 +107,7 @@ void RobotContainer::ConfigureButtonBindings() {
   // 84in 2550  700 BACK SIDE
   // 96in 
 
-  frc2::JoystickButton(&m_driverController, 2) // B
+  frc2::JoystickButton(&m_buttons_controller, 2) // B
   .WhenPressed ([this]() {m_intake.DeployIntake(); m_intake.RunIntake();    })
   .WhenReleased([this]() {m_intake.RetractIntake(); m_intake.StopAll();   });
 
@@ -115,13 +120,27 @@ void RobotContainer::ConfigureButtonBindings() {
   .WhenPressed ([this]() { m_climer.Set(-1); })
   .WhenReleased([this]() { m_climer.Set(0); });*/
 
-  frc2::JoystickButton(&m_driverController, 3) // X
+  frc2::JoystickButton(&m_buttons_controller, 3) // X
   .WhenPressed( new ShooterCommand(&m_shooter, []() {return 2250; }, []() {return 2000;}));
 
-  frc2::JoystickButton(&m_driverController, 4) // Y
+  frc2::JoystickButton(&m_buttons_controller, 4) // Y
   .WhenPressed( new ShooterCommand(&m_shooter,
   [this]() {return m_shooter.GetAutoSpeedSetpoint(); },
   [this]() {return m_shooter.GetAutoHoodSetpoint();}));
+
+  frc2::JoystickButton(&m_buttons_controller, 10)
+  .WhenPressed( new ShooterCommand(&m_shooter,
+  [this]() { return 3200; },
+  [this]() { return 5400; }
+  ));
+
+  frc2::JoystickButton(&m_drive_controller, 3) // X - drive controller
+  .WhenPressed(
+    [this] () { m_shooter.CancelCommand(); }
+  )
+  .WhenReleased(
+    [this]() { m_shooter.EnableCommand(); }
+  );
 
   frc2::JoystickButton(&m_drive_controller, 2) // B - drive controller
   .WhenPressed(
@@ -133,34 +152,34 @@ void RobotContainer::ConfigureButtonBindings() {
     [this]() {m_shooter.ToggleAutoSpinup(); }
   );
 
-  frc2::JoystickButton(&m_driverController, 1) // A
+  frc2::JoystickButton(&m_buttons_controller, 1) // A
   .WhenPressed(
     new frc2::SequentialCommandGroup(
       ShooterCommand(&m_shooter, []() {return 2475;}, []() {return 750;})
     )
   );
 
-  frc2::JoystickButton(&m_driverController, 5) // left bumper
+  frc2::JoystickButton(&m_buttons_controller, 5) // left bumper
   .WhenPressed(
     [this]() { m_compressor.Disable(); }
   );
 
-  frc2::JoystickButton(&m_driverController, 6) // right bumper
+  frc2::JoystickButton(&m_buttons_controller, 6) // right bumper
   .WhenPressed(
     [this]() { m_compressor.EnableDigital(); }
   );
 
-  frc2::JoystickButton(&m_driverController, 7) // back
+  frc2::JoystickButton(&m_buttons_controller, 7) // back
   .WhenPressed(
     new HoodCommand(&m_shooter, []() {return 0; })
   );
 
-  frc2::JoystickButton(&m_driverController, 8) // start
+  frc2::JoystickButton(&m_buttons_controller, 8) // start
   .WhenPressed(
     new HoodCommand(&m_shooter, []() {return 5010; })
   );
   
-  frc2::JoystickButton(&m_driverController, 9) // left joystick 
+  frc2::JoystickButton(&m_buttons_controller, 9) // left joystick 
   .WhenPressed ([this]() { m_intake.RunIntake(); })
   .WhenReleased([this]() { m_intake.StopAll(); });
 

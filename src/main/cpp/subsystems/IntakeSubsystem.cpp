@@ -28,7 +28,6 @@ IntakeSubsystem::IntakeSubsystem() {
     frc::SmartDashboard::PutBoolean("Running Intake", false);
     frc::SmartDashboard::PutBoolean("Intake", false);
 
-
 }
 
 void IntakeSubsystem::Periodic() {

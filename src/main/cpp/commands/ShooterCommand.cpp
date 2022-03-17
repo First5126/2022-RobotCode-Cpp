@@ -12,7 +12,7 @@ ShooterCommand::ShooterCommand(ShooterSubsystem* subsystem, std::function<double
 }
 
 bool ShooterCommand::IsFinished() {
-    return this->donefor > 30;
+    return this->donefor > 30 || m_shooter->GetCommandState();
 }
 
 void ShooterCommand::Execute() {    

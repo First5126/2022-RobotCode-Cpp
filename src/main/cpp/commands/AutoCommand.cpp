@@ -24,6 +24,9 @@ AutoCommand::AutoCommand(DriveSubsystem* subsystem, IntakeSubsystem* intake, Sho
         IntakeCommand(m_intake, [this]() {return this->intake_in; })
       },
       frc2::InstantCommand([this]() { this->intake_in = false; }),
-      ShooterCommand(m_shooter, []() {return 2250; }, []() {return 850; })
-    );
+      //ShooterCommand(m_shooter, []() {return 2250; }, []() {return 850; })
+      ShooterCommand(m_shooter,
+      [this]() {return m_shooter->GetAutoSpeedSetpoint(); },
+      [this]() {return m_shooter->GetAutoHoodSetpoint();})
+      );
 }

@@ -90,7 +90,14 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   int GetAutoHoodSetpoint();
   int GetAutoSpeedSetpoint();
 
+  inline void CancelCommand() { m_commandState = false;}
+  inline void EnableCommand() { m_commandState = true; }
+
+  inline bool GetCommandState() { return !m_commandState; }
+
  private:
+  bool m_commandState = true;
+
   rev::CANSparkMax *ShooterLeft;
   rev::CANSparkMax *ShooterRight;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <frc2/command/SubsystemBase.h>
+#include "rev/CANSparkMax.h"
 
 #include "ctre/Phoenix.h"
 
@@ -13,7 +14,8 @@ class ClimerSubsystem : public frc2::SubsystemBase {
    */
   void Periodic() override;
 
-  void Set(double speed);
+  void SetLow(double speed);
+  void SetHigh(double speed);
 
 
  private:
@@ -22,4 +24,9 @@ class ClimerSubsystem : public frc2::SubsystemBase {
 
   WPI_TalonFX m_left_motor{5};
   WPI_TalonFX m_right_motor{11};
+
+  rev::CANSparkMax* m_left_high_motor;
+  rev::CANSparkMax* m_right_high_motor;
+
+  
 };

@@ -22,6 +22,7 @@ void Robot::RobotInit() {
  * LiveWindow and SmartDashboard integrated updating.
  */
 void Robot::RobotPeriodic() {
+  frc::SmartDashboard::PutNumber("Pressure", m_container.m_compressor.GetPressure().value());
   frc2::CommandScheduler::GetInstance().Run();
 }
 
