@@ -83,6 +83,12 @@ void DriveSubsystem::Periodic()  {
     //frc::SmartDashboard::PutNumber("Watts", PD.GetTotalPower());
 
 
+    frc::SmartDashboard::PutNumber("Left Front Drivetrain Temp", LFMotor.GetTemperature());
+    frc::SmartDashboard::PutNumber("Left Back Drivetrain Temp", LBMotor.GetTemperature());
+    frc::SmartDashboard::PutNumber("Right Front Drivetrain Temp", RFMotor.GetTemperature());
+    frc::SmartDashboard::PutNumber("Right Back Drivetrain Temp", RBMotor.GetTemperature());
+
+
     frc::SmartDashboard::PutNumber("Gyro", this->GetHeading());
 }
 

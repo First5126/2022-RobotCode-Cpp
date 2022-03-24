@@ -36,6 +36,11 @@ ShooterSubsystem::ShooterSubsystem()
 
     this->m_pid.SetTolerance(50);
 
+    m_vision.IsDetectingTape();
+    m_vision.IsDetectingTape();
+    m_vision.IsDetectingTape();
+    m_vision.IsDetectingTape();
+
 }
 
 ShooterSubsystem::~ShooterSubsystem() {
@@ -246,7 +251,7 @@ bool ShooterSubsystem::ContainsBall() {
 }
 
 void ShooterSubsystem::acuateServo(double angle) {
-    m_pushy.Set(angle);
+    m_wipe.Set(angle);
 }
 
 bool ShooterSubsystem::ContainsShootingBall() {

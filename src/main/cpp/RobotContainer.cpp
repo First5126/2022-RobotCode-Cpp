@@ -17,6 +17,8 @@
 #include <frc2/command/ParallelCommandGroup.h>
 #include "commands/ClimerCommand.h"
 
+#include "commands/ClimerSet.h"
+#include "commands/ClimerHome.h"
 
 bool isfinished() {
   return false;
@@ -120,8 +122,19 @@ void RobotContainer::ConfigureButtonBindings() {
   .WhenPressed ([this]() { m_climer.Set(-1); })
   .WhenReleased([this]() { m_climer.Set(0); });*/
 
+
+  /* SHOOTER CLOSE
   frc2::JoystickButton(&m_buttons_controller, 3) // X
-  .WhenPressed( new ShooterCommand(&m_shooter, []() {return 2250; }, []() {return 2000;}));
+  .WhenPressed( new ShooterCommand(&m_shooter, []() {return 2300; }, []() {return 1900;}));
+  */ 
+
+  frc2::JoystickButton(&m_buttons_controller, 3) // X
+  .WhenPressed( 
+    //new ShooterCommand(&m_shooter, []() {return 2400; }, []() {return 3100;})
+    //new ShooterCommand(&m_shooter, []() {return 2500; }, []() {return 900; })
+    new ShooterCommand(&m_shooter, []() {return 1500; }, []() {return 900; })
+    );
+
 
   frc2::JoystickButton(&m_buttons_controller, 4) // Y
   .WhenPressed( new ShooterCommand(&m_shooter,
@@ -134,11 +147,27 @@ void RobotContainer::ConfigureButtonBindings() {
   [this]() { return 5400; }
   ));
 
+  frc2::JoystickButton(&m_drive_controller, 1) // A - drive controller
+  .WhenPressed(
+    [this]() {m_climer.resetAll(); }
+  );
+
+  frc2::JoystickButton(&m_drive_controller, 8) // start
+  .WhenPressed(
+    new ClimerSet(&m_climer, []() {return 1.0;}, []() {return 1.0;})
+  );
+
+  frc2::JoystickButton(&m_drive_controller, 9) // start
+  .WhenPressed(
+    new ClimerSet(&m_climer, []() {return -1.0;}, []() {return -1.0;})
+  );
+
+  
+
   frc2::JoystickButton(&m_drive_controller, 3) // X - drive controller
   .WhenPressed(
     [this] () { m_shooter.CancelCommand(); }
-  )
-  .WhenReleased(
+  ).WhenReleased(
     [this]() { m_shooter.EnableCommand(); }
   );
 

@@ -109,7 +109,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   double Shooter_Ki = 0;
   double Shooter_Kd = 0;
 
-  double Ku = 5;
+  // ku = 5, time = .44
+  double Ku = 3;
   double time = 0.44;
 
   frc::PIDController m_pid {0.6 * Ku, 1.2 * Ku / time, 3 * Ku * time / 40};
@@ -131,7 +132,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   bool ShooterReset = false;
 
-  frc::Servo m_pushy {0};
+  frc::Servo m_wipe {0};
 
   const static int TABLESIZE = 8;
 
@@ -155,9 +156,9 @@ class ShooterSubsystem : public frc2::SubsystemBase {
     2500,
     2500,
     2500,
+    2550,
     2525,
-    2475,
-    2550
+    2660
   };
 
   int HoodTable[TABLESIZE] = {

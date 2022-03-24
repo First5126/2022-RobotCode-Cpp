@@ -36,7 +36,7 @@ class ClimerCommand
   std::function<double()> m_up;
   std::function<double()> m_down;
 
-    std::function<double()> m_up_high;
+  std::function<double()> m_up_high;
   std::function<double()> m_down_high;
 
 };

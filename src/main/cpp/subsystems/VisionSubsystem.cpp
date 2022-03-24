@@ -17,11 +17,14 @@ void VisionSubsystem::Periodic() {
 }
 
 bool VisionSubsystem::IsConnected() {
+    if (this->latency <= 0) {
+        std::cout << "Limelight not connected!" << std::endl;
+    }
+
     return this->latency > 0;
 }
 
 void VisionSubsystem::SetMode(Mode mode) {
-    
 
     CurrentMode = mode;
 }
@@ -45,7 +48,7 @@ double VisionSubsystem::GetBallDistance() {
 }
 
 double VisionSubsystem::GetValueFromPi(std::string value) {
-    std::string NetworkTablesRequest = "/" + PiName + CameraName + "/" + value;
+    std::string NetworkTablesRequest = "/" + PiName + "/" + value;
 
     return table->GetNumber(value, 0.0);
 }

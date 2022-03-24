@@ -36,7 +36,7 @@ class TargetAlign
   ShooterSubsystem* m_shooter;
   DriveSubsystem* m_drive;
 
-  frc::PIDController m_left_pid {0.1, 0.2, 0};
+  frc::PIDController m_left_pid {0.2, 0.2, 0};
 
   bool is_done = false;
 };
