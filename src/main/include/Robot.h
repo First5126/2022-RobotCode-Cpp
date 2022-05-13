@@ -6,6 +6,7 @@
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/Command.h>
+#include <string>
 
 #include "RobotContainer.h"
 
@@ -28,4 +29,13 @@ class Robot : public frc::TimedRobot {
   frc2::Command* m_teleopCommand = nullptr;
 
   RobotContainer m_container;
+
+  bool IsConnected = false;
+  std::string SentLED = "c";
+
+  std::string LastSend = "";
+  int sending_for = 0;
+
+  std::shared_ptr<nt::NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("FMSInfo");
+
 };

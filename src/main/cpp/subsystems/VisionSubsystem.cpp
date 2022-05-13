@@ -68,12 +68,12 @@ double VisionSubsystem::GetTapePitch() {
 double VisionSubsystem::GetTapeDistance() {
     double LimeLightHight = 22.75;
     double TargetHight = 103;
-    double LimelightAngle = 30; // degrees
+    double LimelightAngle = 46; // degrees
 
     double angleToGoalDegrees = LimelightAngle + Pitch; 
     double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
     double Distance = (TargetHight - LimeLightHight) / std::tan(angleToGoalRadians);
 
-    return Distance - (15.5 + 22);
+    return (Distance - (15.5 + 22 - 11)) + 11; // 13
 }

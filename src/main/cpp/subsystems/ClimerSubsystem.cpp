@@ -71,7 +71,6 @@ void ClimerSubsystem::ResetHighRight() {
 }
 
 void ClimerSubsystem::SetLeftLow(double speed) {
-    std::cout << "left: " << speed << std::endl;
     m_left_motor.Set(speed);
 }
 
@@ -79,10 +78,10 @@ void ClimerSubsystem::SetRightLow(double speed) {
     m_right_motor.Set(-speed);
 }
 void ClimerSubsystem::SetLeftHigh(double speed) {
-    m_left_high_motor.Set(speed);
+    m_left_high_motor.Set(-speed);
 }
 void ClimerSubsystem::SetRightHigh(double speed) {
-    m_right_high_motor.Set(-speed);
+    m_right_high_motor.Set(speed);
 }
 
 int ClimerSubsystem::GetMotorIdEncoder(int id) {

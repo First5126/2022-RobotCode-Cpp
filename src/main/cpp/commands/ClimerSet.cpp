@@ -24,34 +24,34 @@ bool ClimerSet::IsFinished() {
 }
 
 void ClimerSet::Initialize() {
-    std::cout << "Init" << std::endl;
+    std::cout << "Init: " << this->constructPoint(0 > 2 ? m_sethigh() : m_setlow(), 0) << std::endl;
 }
 
 void ClimerSet::Execute() {
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 4; i++) {
         int newpoint = this->constructPoint(i > 2 ? m_sethigh() : m_setlow(), i);
         int currentpoint = m_climer->GetMotorIdEncoder(i);
 
         int diff = abs(newpoint - currentpoint);
 
-        
+        if (!within(currentpoint, newpoint)) {
             double speed = 0;
             
             if (newpoint > currentpoint) {
 
-                if (diff < 10000) {
+                if (diff < 20000) {
                     speed = 0.10;
                 }
                 else {
-                    speed = 0.5;
+                    speed = 0.8;
                 }
             }
             else {
-                if (diff < 10000) {
+                if (diff < 20000) {
                     speed = -0.10;
                 }
                 else {
-                    speed = -0.5;
+                    speed = -0.8;
                 }
             }
 
@@ -59,7 +59,10 @@ void ClimerSet::Execute() {
 
             std::cout << "Motor id: " << i << " : " << speed << " --> " <<  newpoint << " | " << diff << std::endl;
 
-        
+        }
+        else {
+            m_climer->SetMotorId(i, 0);
+        }
     }
 
 }

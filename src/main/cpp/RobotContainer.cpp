@@ -20,6 +20,8 @@
 #include "commands/ClimerSet.h"
 #include "commands/ClimerHome.h"
 
+#include <frc/SerialPort.h>
+
 bool isfinished() {
   return false;
 }
@@ -131,21 +133,30 @@ void RobotContainer::ConfigureButtonBindings() {
   frc2::JoystickButton(&m_buttons_controller, 3) // X
   .WhenPressed( 
     //new ShooterCommand(&m_shooter, []() {return 2400; }, []() {return 3100;})
-    //new ShooterCommand(&m_shooter, []() {return 2500; }, []() {return 900; })
-    new ShooterCommand(&m_shooter, []() {return 1500; }, []() {return 900; })
+    //new ShooterCommand(&m_shooter, []() {return 2000; }, []() {return 1550; })
+    new ShooterCommand(&m_shooter, []() {return 3450; }, []() {return 3325; })
     );
+
+    
 
 
   frc2::JoystickButton(&m_buttons_controller, 4) // Y
-  .WhenPressed( new ShooterCommand(&m_shooter,
-  [this]() {return m_shooter.GetAutoSpeedSetpoint(); },
-  [this]() {return m_shooter.GetAutoHoodSetpoint();}));
+  .WhenPressed(
+    new ShooterCommand(&m_shooter,
+      [this]() { return 1850; },
+      [this]() { return 4750; }
+    )
+  );
 
-  frc2::JoystickButton(&m_buttons_controller, 10)
+  /*frc2::JoystickButton(&m_buttons_controller, 10)
   .WhenPressed( new ShooterCommand(&m_shooter,
   [this]() { return 3200; },
   [this]() { return 5400; }
-  ));
+  ));*/
+  frc2::JoystickButton(&m_buttons_controller, 10) // Left Joystick
+  .WhenPressed(
+    new ClimerSet(&m_climer, []() {return 1.0;}, []() {return 1.0;})
+  );
 
   frc2::JoystickButton(&m_drive_controller, 1) // A - drive controller
   .WhenPressed(
@@ -157,12 +168,11 @@ void RobotContainer::ConfigureButtonBindings() {
     new ClimerSet(&m_climer, []() {return 1.0;}, []() {return 1.0;})
   );
 
-  frc2::JoystickButton(&m_drive_controller, 9) // start
+  frc2::JoystickButton(&m_drive_controller, 7) // func
   .WhenPressed(
-    new ClimerSet(&m_climer, []() {return -1.0;}, []() {return -1.0;})
+    new ClimerSet(&m_climer, []() {return -0.9;}, []() {return -0.9;})
   );
 
-  
 
   frc2::JoystickButton(&m_drive_controller, 3) // X - drive controller
   .WhenPressed(
@@ -181,12 +191,39 @@ void RobotContainer::ConfigureButtonBindings() {
     [this]() {m_shooter.ToggleAutoSpinup(); }
   );
 
-  frc2::JoystickButton(&m_buttons_controller, 1) // A
+  // ====================== HIGH
+  // 0  - BACK | 3200, 1875
+  // 12 - BACK | 3100, 1500
+  // 24 - BACK | 3100, 1200
+  // 36 - BACK | 3175, 1100
+  // 48 - BACK | 3175, 1025
+  // 60 - BACK | 3175, 1000
+  // 72 - BACK | 3350,  975
+  // 84 - BACK | 3450,  975
+
+  // ====================== LOW
+  // 0  - BACK | 2050, 1550
+  // 12 - BACK | 3100, 1500
+  // 24 - BACK | 3100, 1200
+  // 36 - BACK | 3175, 1100
+  // 48 - BACK | 3175, 1025
+  // 60 - BACK | 3175, 1000
+  // 72 - BACK | 3350,  975
+  // 84 - BACK | 3450,  975
+
+
+
+  /*frc2::JoystickButton(&m_buttons_controller, 1) // A
   .WhenPressed(
     new frc2::SequentialCommandGroup(
-      ShooterCommand(&m_shooter, []() {return 2475;}, []() {return 750;})
+      ShooterCommand(&m_shooter, []() {return 2050;}, []() {return 1600;})
+      //ShooterCommand(&m_shooter, []() {return 3700;}, []() {return 5000;})
     )
-  );
+  );*/
+  frc2::JoystickButton(&m_buttons_controller, 1) // A
+  .WhenPressed( new ShooterCommand(&m_shooter,
+  [this]() {return m_shooter.GetAutoSpeedSetpoint(); },
+  [this]() {return m_shooter.GetAutoHoodSetpoint();}));
 
   frc2::JoystickButton(&m_buttons_controller, 5) // left bumper
   .WhenPressed(

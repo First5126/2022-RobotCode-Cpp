@@ -11,11 +11,12 @@ IntakeCommand::IntakeCommand(IntakeSubsystem* subsystem, std::function<bool()> o
 
 bool IntakeCommand::IsFinished() {
     // limit switch
+    if (m_override()) std::cout << "Intake Command Ended!" << std::endl;
     return m_override();
 }
 
 void IntakeCommand::Execute() {    
-   ticks++;
+   /*ticks++;
 
    if (m_override()) {
        this->m_intake->RetractIntake();
@@ -31,11 +32,12 @@ void IntakeCommand::Execute() {
            }
        }
    }
-   else {
+   else {*/
        this->m_intake->RunIntake();
        this->m_intake->DeployIntake();
+       std::cout << "THE INTAKE SHOULD BE OUT!!!" << std::endl;
 
-   }
+   //}
     
 }
 

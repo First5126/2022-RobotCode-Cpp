@@ -29,6 +29,8 @@
 
 #include "subsystems/VisionSubsystem.h"
 
+#include <frc/SerialPort.h>
+
 
 
 class ShooterSubsystem : public frc2::SubsystemBase {
@@ -90,6 +92,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   int GetAutoHoodSetpoint();
   int GetAutoSpeedSetpoint();
 
+  bool IsConnected();
+
   inline void CancelCommand() { m_commandState = false;}
   inline void EnableCommand() { m_commandState = true; }
 
@@ -134,45 +138,57 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   frc::Servo m_wipe {0};
 
-  const static int TABLESIZE = 8;
+  const static int TABLESIZE = 9;
 
   int HoodSetpoint = 0;
   int SpeedSetPoint = 0;
 
   int distanceTable[TABLESIZE] = {
     0,
-    12,
+    24,
     27,
-    36,
-    48,
-    60,
+    35,
+    47,
+    57,
+    68,
     72,
     84
   };
 
   int SpeedTable[TABLESIZE] = {
-    2250,
-    2500,
-    2500,
-    2500,
-    2500,
-    2550,
-    2525,
-    2660
+    3200 + 25, //0
+    3100 + 10, //24
+    3100 + 25, //27 
+    3175 + 50, //36
+    3200 + 25, //48
+    3175 + 90, //60
+    3350 + 50, //68 --
+    3350 + 25, //72
+    3450 + 25  //84
   };
 
   int HoodTable[TABLESIZE] = {
-    2000,
-    1500,
-    1000,
-    900,
-    850,
-    800,
-    750,
-    700
+    1875,      //0
+    1400,      //24
+    1200 + 25, //27
+    1100,      //36
+    1025,      //48
+    1000 - 10, //60
+    940,       //68 --
+    975,       //72
+    975        //84
   };
 
   bool AutoSpinup = false;
+
+  // 0  - BACK | 3200, 1875
+  // 12 - BACK | 3100, 1500
+  // 24 - BACK | 3100, 1200
+  // 36 - BACK | 3175, 1100
+  // 48 - BACK | 3175, 1025
+  // 60 - BACK | 3175, 1000
+  // 72 - BACK | 3350,  975
+  // 84 - BACK | 3450,  975
 
   //  0in 2250 2000 BACK  SIDE
   // 12in 2500 1500 BACK  SIDE
@@ -194,5 +210,6 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   // 84in 2600 4400 FRONT SIDE
   // 96in 2675 4600 FRONT SIDE
 
+  
 
 };

@@ -53,6 +53,8 @@ void ShooterSubsystem::Periodic() {
     frc::SmartDashboard::PutBoolean("Ball in Shooter", this->ContainsBall());
     frc::SmartDashboard::PutNumber("Robot Distance", m_vision.GetTapeDistance());
 
+    
+
     if (m_vision.IsDetectingTape()) {
         double CurrentDistance = m_vision.GetTapeDistance();
 
@@ -72,7 +74,7 @@ void ShooterSubsystem::Periodic() {
         HoodSetpoint = this->HoodTable[closestPoint];
         SpeedSetPoint = this->SpeedTable[closestPoint];
 
-        if (closestPoint + 1 < TABLESIZE ) {
+        if ( closestPoint + 1 < TABLESIZE ) {
             int DiffSpeedSetpoint = this->SpeedTable[closestPoint + 1];
             int DiffHoodSetpoint = this->HoodTable[closestPoint + 1];
         
@@ -100,6 +102,7 @@ void ShooterSubsystem::Periodic() {
     frc::SmartDashboard::PutNumber ("Shooter Speed"     , this->GetShooterSpeed());
     frc::SmartDashboard::PutNumber ("Speed Delta"       , this->GetShooterSpeed() - SpeedSetPoint);
     frc::SmartDashboard::PutBoolean("AutoSpinup"        , this->GetAutoSpinupState());
+    frc::SmartDashboard::PutBoolean("2nd Ball"          , !hopperball.Get());
 
     if (AutoSpinup){
         this->SetHoodToPos(HoodSetpoint);
@@ -138,7 +141,7 @@ void ShooterSubsystem::RunShooter(double speed) {
     if (speed <= 0) RunningSpeed = 0;
 
     if (RunningSpeed < 0) RunningSpeed = 0;
-    if (RunningSpeed > 0.8) RunningSpeed = 0.8;
+    if (RunningSpeed > 1) RunningSpeed = 1;
 
     //std::cout << "Running Speed: " << RunningSpeed << " Target: " << speed << 
     //" Current: " << this->GetShooterSpeed() << " Difference: " << this->GetShooterSpeed() - speed << std::endl;
@@ -210,7 +213,7 @@ void ShooterSubsystem::SetHoodToPos(int pos) {
         }
     }
     else {
-        std::cout << "RESETING..." << std::endl;
+        std::cout << "Hood is homing..." << std::endl;
         if (!this->IsLimitReached()){
             this->SetHoodSpeed(1);
         }
@@ -260,4 +263,7 @@ bool ShooterSubsystem::ContainsShootingBall() {
     double sensorFlipped = fabs(2047 - sensorValue);
 
     return sensorFlipped < 1730;
+}
+bool ShooterSubsystem::IsConnected() {
+    return this->m_vision.GetMode() > 0;
 }

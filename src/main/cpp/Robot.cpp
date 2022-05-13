@@ -11,6 +11,7 @@
 
 void Robot::RobotInit() {
   std::cout << "ROBOT STARTING..." << std::endl;
+  
 }
 
 /**
@@ -24,6 +25,22 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
   frc::SmartDashboard::PutNumber("Pressure", m_container.m_compressor.GetPressure().value());
   frc2::CommandScheduler::GetInstance().Run();
+
+
+  if (LastSend != SentLED && sending_for < 10) {
+    this->sending_for++;
+    //m_container.leds.Write(SentLED);
+  }
+  else {
+    sending_for = 0;
+    LastSend = SentLED;
+  }
+  
+
+  IsConnected =  m_container.m_shooter.IsConnected();
+
+  if (!IsConnected) SentLED = "P";
+  else              SentLED = "c";
 }
 
 /**
@@ -35,7 +52,9 @@ void Robot::DisabledInit() {
   
 }
 
-void Robot::DisabledPeriodic() {}
+void Robot::DisabledPeriodic() {
+  SentLED = "c";
+}
 
 /**
  * This autonomous runs the autonomous command selected by your {@link
@@ -48,9 +67,12 @@ void Robot::AutonomousInit() {
     m_autonomousCommand->Schedule();
   }
 
+  
 }
 
-void Robot::AutonomousPeriodic() {}
+void Robot::AutonomousPeriodic() {
+  SentLED = "A";
+}
 
 void Robot::TeleopInit() {
   // This makes sure that the autonomous stops running when
@@ -61,12 +83,24 @@ void Robot::TeleopInit() {
     m_autonomousCommand->Cancel();
     m_autonomousCommand = nullptr;
   }
+
+  
 }
 
 /**
  * This function is called periodically during operator control.
  */
-void Robot::TeleopPeriodic() {}
+void Robot::TeleopPeriodic() {
+  auto color = table.get()->GetBoolean("IsRedAlliance", false);
+
+  if (color) {
+    SentLED = "RC";
+  }
+  else {
+    SentLED = "BC";
+  }
+
+}
 
 /**
  * This function is called periodically during test mode.

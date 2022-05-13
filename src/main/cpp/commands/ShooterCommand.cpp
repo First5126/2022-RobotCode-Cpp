@@ -33,14 +33,17 @@ void ShooterCommand::Execute() {
     
     // Figure out when we are VALID to shoot
     if (feedingTicks > 0) {
-        std::cout << "Valid To Shoot ---------------------------------" << std::endl;
+        //std::cout << "Shooting Ball!" <<  std::endl;
 
         if (m_shooter->ContainsShootingBall()) {
             frc::SmartDashboard::PutNumber("Shot Time", total_ticks / 50.);
             
             // Wipe the servo
             ticks++;
-            if (ticks % 30 == 0) this->state_change = !this->state_change;        
+            if (ticks % 40 == 0) { 
+                this->state_change = !this->state_change;  
+                std::cout << "[ERROR]: Ball stuck!" << std::endl;
+            }
             this->m_shooter->acuateServo(this->state_change ? 0.5 : -1);
         }
         else {
@@ -54,6 +57,7 @@ void ShooterCommand::Execute() {
         feedingTicks--;
     }
     else {
+        //std::cout << "Spinning up Shooter ----- " << std::endl;
 
         // Stop and reset all the things
         this->m_shooter->StopFeedBall();
@@ -68,7 +72,7 @@ void ShooterCommand::Execute() {
 
     // We need to know if the shooter and hood is at the speed
     if ((this->m_shooter->IsShooterAtSpeed(m_shooting_speed()) && this->m_shooter->IsHoodAtPos(m_hood())) || m_shooter->GetAutoSpinupState()) {
-        
+        std::cout << "At Speed (waiting) -- " << validPeriod << " X: " << feedingTicks << std::endl;
         // We then need to know if we are valid for 5 ticks (1/10 of a second)
         // Then we are ready to feed the ball
         if (validPeriod > 4) {
